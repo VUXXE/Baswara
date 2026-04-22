@@ -166,7 +166,7 @@ export default function Home() {
               <div className="h-12 w-12 rounded-2xl bg-secondary/20 flex items-center justify-center text-secondary">
                 <Users size={24} />
               </div>
-              <h3 className="text-2xl font-black tracking-tight">RSVP Cerdas</h3>
+              <h3 className="text-2xl font-black tracking-tight">SMART RSVP</h3>
               <p className="text-sm text-muted-foreground font-light leading-relaxed">
                 Pelacakan tamu otomatis dan konfirmasi dengan analitik real-time.
               </p>
