@@ -4,7 +4,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 
 export default function Navbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-background/40 backdrop-blur-2xl">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-foreground/5 bg-background/40 backdrop-blur-2xl">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center">
           <Image src="/Main-logo.svg" alt="Baswara Logo" width={200} height={56} className="h-14 w-auto" priority />
@@ -13,7 +13,7 @@ export default function Navbar() {
           <Link href="/dashboard" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
             Dashboard
           </Link>
-          <Link href="/events/new" className={buttonVariants()}>Create Event</Link>
+          <Link href="/events/new" className={buttonVariants({ className: "bg-primary text-white rounded-none px-6" })}>Create Event</Link>
         </div>
       </div>
     </nav>
