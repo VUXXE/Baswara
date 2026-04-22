@@ -12,7 +12,7 @@ export default function Home() {
       <div className="noise-overlay opacity-[0.03]" />
       
       {/* Hero Section - Balanced 2-Column Layout (No Overlap) */}
-      <section className="relative z-10 pt-40 pb-0 md:pt-56 px-6 lg:px-12">
+      <section className="relative z-10 px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             {/* Left Content */}
