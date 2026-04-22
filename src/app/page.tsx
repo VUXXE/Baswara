@@ -90,7 +90,7 @@ export default function Home() {
 
       {/* Why Choose Us */}
       <div className="w-full max-w-6xl mx-auto px-6 mt-24 text-center">
-        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Kenapa Harus Memilih RSVPhub?</h2>
+        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Kenapa Harus Memilih Baswara?</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">Dirancang untuk skala apa pun—dari kumpul keluarga hingga konferensi nasional—kami memastikan acaramu berjalan tanpa hambatan.</p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">

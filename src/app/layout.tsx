@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RSVPhub | Premium Multi-Event Management",
-  description: "Seamlessly create, manage, and track RSVPs for your events.",
+  title: "Baswara | Platform Manajemen Acara & RSVP Digital",
+  description: "Rencanakan dan kelola berbagai acaramu dengan mudah melalui fitur undangan digital dan sistem RSVP terintegrasi dari Baswara.",
 };
 
 export default function RootLayout({
