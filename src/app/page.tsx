@@ -12,7 +12,7 @@ export default function Home() {
       <div className="noise-overlay opacity-[0.03]" />
       
       {/* Hero Section - Balanced 2-Column Layout (No Overlap) */}
-      <section className="relative z-10 pt-40 pb-24 md:pt-56 px-6 lg:px-12">
+      <section className="relative z-10 pt-40 pb-0 md:pt-56 px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             {/* Left Content */}
@@ -43,21 +43,30 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Image Content (Contained, No Overlap) */}
+            {/* Right Image Content - Improved Atmospheric Depth */}
             <div className="relative flex justify-center lg:justify-end mt-12 lg:mt-0">
-              <div className="relative z-10 w-full max-w-[550px] lg:max-w-full">
-                <div className="relative drop-shadow-[0_20px_50px_rgba(107,29,29,0.1)]">
+              <div className="relative z-10 w-full max-w-[580px] lg:max-w-full">
+                {/* Decorative Framing Circle (Static) */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] border border-[#fd5e4b]/5 rounded-full -z-10" />
+                
+                {/* Multi-layered Ambient Glows */}
+                <div className="absolute top-[10%] right-[-10%] w-64 h-64 bg-[#fecf00]/10 blur-[80px] -z-10 rounded-full" />
+                <div className="absolute bottom-[10%] left-[-10%] w-80 h-80 bg-[#fd5e4b]/10 blur-[100px] -z-10 rounded-full" />
+                
+                {/* The Phone Image with Sophisticated Shadow */}
+                <div className="relative z-10 drop-shadow-[-20px_40px_80px_rgba(107,29,29,0.12)]">
                   <Image 
                     src="/Phone.png" 
                     alt="Baswara App Preview" 
                     width={1200} 
                     height={1400} 
-                    className="w-full h-auto object-contain"
+                    className="w-full h-auto object-contain scale-105"
                     priority
                   />
                 </div>
-                {/* Refined Decorative Glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#fd5e4b]/5 blur-[120px] -z-10 rounded-full" />
+
+                {/* Grounding Stage Shadow (Static) */}
+                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[70%] h-8 bg-[#6b1d1d]/5 blur-2xl rounded-[100%] -z-10" />
               </div>
             </div>
           </div>
