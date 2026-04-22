@@ -4,10 +4,10 @@ import { Button, buttonVariants } from '@/components/ui/button';
 
 export default function Navbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-foreground/5 bg-background/40 backdrop-blur-2xl">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#fedbdf] bg-background/40 backdrop-blur-2xl px-6 lg:px-12 py-4">
+      <div className="w-full flex justify-between items-center">
         <Link href="/" className="flex items-center">
-          <Image src="/Main-logo.svg" alt="Baswara Logo" width={200} height={56} className="h-14 w-auto" priority />
+          <Image src="/Main-logo.svg" alt="Baswara Logo" width={180} height={50} className="h-10 w-auto" priority />
         </Link>
         <div className="flex gap-6 items-center">
           <Link href="/dashboard" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
