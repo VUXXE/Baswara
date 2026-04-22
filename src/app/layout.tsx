@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
+import { Analytics } from '@vercel/analytics/react';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,6 +32,7 @@ export default function RootLayout({
         <main className="pt-24 min-h-screen">
           {children}
         </main>
+        <Analytics />
       </body>
     </html>
   );
