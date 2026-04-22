@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ArrowRight, Calendar, Users, Zap, Shield, Star, CheckCircle2, Heart } from 'lucide-react';
+import { ArrowRight, Calendar, Users, Zap, Shield, Star, CheckCircle2, Heart, Sparkles } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -133,20 +133,123 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonial Section */}
-      <section className="relative z-10 py-32 md:py-64 px-6 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="max-w-5xl mx-auto space-y-16">
-            <div className="flex justify-center gap-2">
-              {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={20} className="fill-[#fecf00] text-[#fecf00]" />)}
+      {/* Why Choose Us Section - Editorial Grid */}
+      <section className="relative z-10 py-32 md:py-48 px-6 bg-white border-y border-[#6b1d1d]/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-24 space-y-4">
+            <h2 className="text-xs font-black tracking-[0.5em] uppercase text-[#fd5e4b]">Keunggulan Kami</h2>
+            <p className="text-5xl md:text-7xl font-black tracking-tighter text-[#6b1d1d]">
+              Mengapa <span className="editorial-heading text-[#fd5e4b]">Baswara?</span>
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-[#6b1d1d]/10">
+            {[
+              { 
+                title: "Desain Berkelas", 
+                desc: "Kami menciptakan karya seni digital yang mencerminkan prestise acara Anda, bukan sekadar undangan biasa.",
+                icon: <Sparkles size={32} /> 
+              },
+              { 
+                title: "Teknologi Handal", 
+                desc: "Sistem RSVP kami dirancang untuk menangani ribuan tamu tanpa hambatan, memberikan ketenangan pikiran total.",
+                icon: <Zap size={32} /> 
+              },
+              { 
+                title: "Dukungan Personal", 
+                desc: "Tim ahli kami mendampingi setiap langkah Anda untuk memastikan detail digital acara berjalan sempurna.",
+                icon: <Heart size={32} /> 
+              }
+            ].map((item, idx) => (
+              <div key={idx} className="group p-12 md:p-16 border-b md:border-b-0 md:border-r last:border-r-0 border-[#6b1d1d]/10 hover:bg-[#fedbdf]/30 transition-all duration-500">
+                <div className="text-[#fd5e4b] mb-8 group-hover:scale-110 transition-transform duration-500">{item.icon}</div>
+                <h3 className="text-2xl font-black tracking-tighter text-[#6b1d1d] uppercase mb-4">{item.title}</h3>
+                <p className="text-lg text-[#6b1d1d]/60 font-medium leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Review Testimonial Section - Editorial Grid */}
+      <section className="relative z-10 py-32 md:py-48 px-6 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+            <div className="max-w-2xl space-y-4">
+              <h2 className="text-xs font-black tracking-[0.5em] uppercase text-[#fd5e4b]">Suara Pelanggan</h2>
+              <p className="text-5xl md:text-7xl font-black tracking-tighter text-[#6b1d1d]">
+                Ulasan <span className="editorial-heading text-[#fd5e4b]">Terpercaya.</span>
+              </p>
             </div>
-            <blockquote className="text-4xl md:text-7xl font-serif italic font-light leading-tight tracking-tight text-[#6b1d1d]">
-              &ldquo;Baswara telah mendefinisikan ulang <span className="not-italic font-black text-[#fd5e4b]">standar kemewahan</span> digital dalam manajemen acara korporat kami.&rdquo;
-            </blockquote>
-            <div className="space-y-4">
-              <div className="text-[#fd5e4b] font-black tracking-[0.5em] uppercase text-sm">Alexandra Vane</div>
-              <div className="text-[#6b1d1d]/40 text-xs font-bold uppercase tracking-[0.3em]">Director of Events, Solar Creative</div>
+            <div className="flex items-center gap-4 pb-4">
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={16} className="fill-[#fecf00] text-[#fecf00]" />)}
+              </div>
+              <span className="text-sm font-bold text-[#6b1d1d]">4.9/5 Rating Global</span>
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#6b1d1d]/10 border border-[#6b1d1d]/10">
+            {[
+              {
+                text: "Baswara mendefinisikan ulang kemewahan digital dalam manajemen acara korporat kami. Detailnya sungguh luar biasa.",
+                name: "Alexandra Vane",
+                role: "Director of Events, Solar Creative",
+                avatar: "AV"
+              },
+              {
+                text: "Undangan digital paling estetik yang pernah saya gunakan. Tamu-tamu kami sangat terkesan dengan kemudahannya.",
+                name: "Budi Santoso",
+                role: "Wedding Organizer Specialist",
+                avatar: "BS"
+              },
+              {
+                text: "Sistem RSVP yang sangat handal. Notifikasi instannya sangat membantu koordinasi tim kami di lapangan.",
+                name: "Siska Amelia",
+                role: "Marketing Manager, Tech-Corp",
+                avatar: "SA"
+              },
+              {
+                text: "Pelayanan yang sangat personal dan profesional. Baswara bukan sekadar platform, tapi mitra sukses acara kami.",
+                name: "Dedi Wijaya",
+                role: "CEO, Luxury Gala Indonesia",
+                avatar: "DW"
+              },
+              {
+                text: "Fitur analitik tamu sangat membantu kami memetakan logistik acara dengan jauh lebih presisi dan efisien.",
+                name: "Maya Putri",
+                role: "Event Logistics Lead",
+                avatar: "MP"
+              },
+              {
+                text: "Transisi dari fisik ke digital menjadi sangat elegan berkat Baswara. Masa depan RSVP ada di sini.",
+                name: "Rian Pratama",
+                role: "Founder, Modern Moments",
+                avatar: "RP"
+              }
+            ].map((review, idx) => (
+              <div key={idx} className="bg-white p-12 md:p-16 space-y-8 hover:bg-[#fedbdf]/20 transition-all duration-500 flex flex-col justify-between">
+                <div className="space-y-8">
+                  <div className="flex justify-between items-start">
+                    <div className="w-12 h-12 rounded-full bg-[#fedbdf] flex items-center justify-center text-[#fd5e4b] font-black text-xs border border-[#fd5e4b]/10 shadow-sm">
+                      {review.avatar}
+                    </div>
+                    <div className="flex gap-1 pt-4">
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={10} className="fill-[#fecf00] text-[#fecf00]" />)}
+                    </div>
+                  </div>
+                  <blockquote className="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-[#6b1d1d]">
+                    &ldquo;{review.text}&rdquo;
+                  </blockquote>
+                </div>
+                <div className="space-y-1 pt-8 border-t border-[#6b1d1d]/5">
+                  <div className="text-[#fd5e4b] font-black tracking-widest uppercase text-[10px]">{review.name}</div>
+                  <div className="text-[#6b1d1d]/40 text-[9px] font-bold uppercase tracking-widest">{review.role}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
