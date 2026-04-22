@@ -1,43 +1,54 @@
-import './CreateEvent.css';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function CreateEventPage() {
   return (
-    <div className="container mt-8 mb-8">
-      <div className="form-container glass">
-        <h1 className="text-center mb-8">Create New Event</h1>
-        
-        <form className="create-event-form flex flex-col gap-6">
-          <div className="form-group">
-            <label htmlFor="title">Event Title</label>
-            <input type="text" id="title" className="input" placeholder="e.g., Alice's 30th Birthday Party" required />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group flex-1">
-              <label htmlFor="date">Date</label>
-              <input type="date" id="date" className="input" required />
+    <div className="container mx-auto px-6 py-12 flex justify-center">
+      <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
+        <CardHeader className="text-center">
+          <CardTitle className="text-3xl font-bold">Create New Event</CardTitle>
+          <CardDescription>Fill out the details below to generate your event page.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="title">Event Title</Label>
+              <Input type="text" id="title" placeholder="e.g., Annual Company Retreat" required />
             </div>
-            <div className="form-group flex-1">
-              <label htmlFor="time">Time</label>
-              <input type="time" id="time" className="input" required />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="date">Date</Label>
+                <Input type="date" id="date" required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="time">Time</Label>
+                <Input type="time" id="time" required />
+              </div>
             </div>
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="location">Location</label>
-            <input type="text" id="location" className="input" placeholder="e.g., 123 Main St, New York, NY" required />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input type="text" id="location" placeholder="e.g., 123 Main St, New York, NY" required />
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="description">Description</label>
-            <textarea id="description" className="input textarea" rows={4} placeholder="Tell your guests what the event is about..."></textarea>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <textarea 
+                id="description" 
+                className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" 
+                placeholder="Tell your guests what the event is about..."
+              />
+            </div>
 
-          <button type="submit" className="btn btn-primary w-full mt-4">
-            Publish Event
-          </button>
-        </form>
-      </div>
+            <Button type="submit" className="w-full" size="lg">
+              Publish Event
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

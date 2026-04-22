@@ -1,16 +1,19 @@
 import Link from 'next/link';
-import './Navbar.css';
+import Image from 'next/image';
+import { Button, buttonVariants } from '@/components/ui/button';
 
 export default function Navbar() {
   return (
-    <nav className="navbar glass">
-      <div className="container flex justify-between items-center navbar-content">
-        <Link href="/" className="logo text-gradient">
-          RSVPhub
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-md">
+      <div className="container mx-auto px-6 h-16 flex justify-between items-center">
+        <Link href="/" className="flex items-center">
+          <Image src="/Main-logo.svg" alt="RSVPhub Logo" width={140} height={32} className="h-8 w-auto" priority />
         </Link>
-        <div className="nav-links flex gap-6 items-center">
-          <Link href="/dashboard" className="nav-item">Dashboard</Link>
-          <Link href="/events/new" className="btn btn-primary">Create Event</Link>
+        <div className="flex gap-6 items-center">
+          <Link href="/dashboard" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
+            Dashboard
+          </Link>
+          <Link href="/events/new" className={buttonVariants()}>Create Event</Link>
         </div>
       </div>
     </nav>
