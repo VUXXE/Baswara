@@ -55,6 +55,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        serif: ["var(--font-playfair)", ...fontFamily.serif],
       },
     },
   },

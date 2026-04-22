@@ -1,180 +1,296 @@
 "use client";
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { ArrowRight, Calendar, Users, Zap, Shield, Star, CheckCircle2 } from 'lucide-react';
+import { useRef } from 'react';
 
 // Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+const fadeInUp: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.2 }
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
   }
 };
 
+const scaleIn: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
 export default function Home() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="relative min-h-screen flex flex-col items-center pt-16 pb-24 overflow-hidden">
+    <div ref={containerRef} className="relative min-h-screen bg-background text-foreground selection:bg-primary selection:text-white">
+      {/* Noise Overlay */}
+      <div className="noise-overlay" />
       
-      {/* Background Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary blob" />
-      <div className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-secondary blob" style={{ animationDelay: '2s' }} />
-      <div className="absolute bottom-[-20%] left-[20%] w-[800px] h-[800px] bg-[#8b5cf6] blob" style={{ animationDelay: '4s' }} />
-
-      {/* Hero Section */}
-      <motion.div 
-        className="relative z-10 max-w-5xl mx-auto px-6 pt-32 pb-16 text-center"
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainer}
-      >
-        <motion.div variants={fadeInUp} className="inline-block mb-4 px-4 py-1.5 rounded-full border border-white/10 glass text-sm font-medium text-white/80">
-          ✨ Era Baru Manajemen Acara Digital
-        </motion.div>
-        
-        <motion.h1 variants={fadeInUp} className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.1] mb-6 text-foreground">
-          Solusi <span className="text-gradient">Terbaik</span> <br className="hidden md:block"/> untuk Setiap Acara.
-        </motion.h1>
-        
-        <motion.p variants={fadeInUp} className="text-lg md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-10 font-light">
-          Rencanakan konferensi, peluncuran produk, hingga pesta dengan Event Planner Digital, Undangan Website bergaya premium, dan Sistem RSVP terintegrasi.
-        </motion.p>
-        
-        <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row justify-center gap-6">
-          <Link href="/dashboard" className={buttonVariants({ size: "lg", className: "h-14 px-8 text-lg rounded-full shadow-[0_0_30px_rgba(236,72,153,0.5)] hover:shadow-[0_0_50px_rgba(236,72,153,0.8)] transition-all" })}>
-            Buat Acara Sekarang
-          </Link>
-          <Link href="#features" className={buttonVariants({ size: "lg", variant: "outline", className: "h-14 px-8 text-lg rounded-full glass border-white/20 hover:bg-white/10" })}>
-            Pelajari Fitur
-          </Link>
-        </motion.div>
-      </motion.div>
-
-      {/* Stats Section */}
-      <motion.div 
-        className="relative z-10 w-full max-w-6xl mx-auto px-6 mt-12"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={fadeInUp}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center glass-card p-10 rounded-3xl">
-          <div>
-            <h2 className="text-5xl font-black text-white mb-2">9.7K+</h2>
-            <p className="text-muted-foreground font-medium uppercase tracking-widest text-sm">Acara Sukses</p>
-          </div>
-          <div className="md:border-x border-white/10">
-            <h2 className="text-5xl font-black text-white mb-2">1.2M+</h2>
-            <p className="text-muted-foreground font-medium uppercase tracking-widest text-sm">RSVP Tercatat</p>
-          </div>
-          <div>
-            <h2 className="text-5xl font-black text-white mb-2">3.5K+</h2>
-            <p className="text-muted-foreground font-medium uppercase tracking-widest text-sm">Event Organizer</p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Services/Features Section */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-6 mt-40 space-y-40" id="features">
-        
-        {/* Feature 1 */}
+      {/* Dynamic Background Blobs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <motion.div 
-          className="flex flex-col lg:flex-row items-center justify-between gap-16"
-          initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
-        >
-          <motion.div variants={fadeInUp} className="flex-1 space-y-8">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-sm font-bold uppercase tracking-wider">Halaman Acara</div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">Sebar undangan digital dengan gaya premium.</h2>
-            <p className="text-xl text-muted-foreground font-light leading-relaxed">Buat dan sebar informasi acaramu dengan Halaman Acara khusus. Sesuaikan desain undangan dan informasi acara dari mana saja, kapan saja.</p>
-            <ul className="space-y-6 text-muted-foreground">
-              <li className="flex items-start gap-4"><div className="p-2 bg-white/5 rounded-lg border border-white/10">✨</div> <span className="text-lg"><strong className="text-white">Kustomisasi Penuh:</strong> Sesuaikan warna dan detail acara.</span></li>
-              <li className="flex items-start gap-4"><div className="p-2 bg-white/5 rounded-lg border border-white/10">📱</div> <span className="text-lg"><strong className="text-white">Sebar Mudah:</strong> Bagikan link melalui WhatsApp atau Email.</span></li>
-            </ul>
-          </motion.div>
-          <motion.div variants={fadeInUp} className="flex-1 w-full aspect-square max-h-[500px] rounded-[2.5rem] glass-card flex items-center justify-center overflow-hidden relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 group-hover:scale-110 transition-transform duration-700" />
-            <div className="relative z-10 text-white/50 font-medium text-xl">Ilustrasi Halaman Acara</div>
-          </motion.div>
-        </motion.div>
-
-        {/* Feature 2 */}
+          className="absolute -top-[10%] -left-[10%] w-[600px] h-[600px] bg-primary/20 blob" 
+          animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
         <motion.div 
-          className="flex flex-col lg:flex-row-reverse items-center justify-between gap-16"
-          initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
-        >
-          <motion.div variants={fadeInUp} className="flex-1 space-y-8">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20 text-sm font-bold uppercase tracking-wider">Manajemen Tamu</div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">Pantau RSVP secara real-time.</h2>
-            <p className="text-xl text-muted-foreground font-light leading-relaxed">Kelola daftar tamu dan RSVP dengan modern. Dapatkan data kehadiran yang akurat untuk memastikan kelancaran acaramu.</p>
-            <ul className="space-y-6 text-muted-foreground">
-              <li className="flex items-start gap-4"><div className="p-2 bg-white/5 rounded-lg border border-white/10">🔒</div> <span className="text-lg"><strong className="text-white">Registrasi Aman:</strong> Kontrol siapa saja yang bisa mendaftar.</span></li>
-              <li className="flex items-start gap-4"><div className="p-2 bg-white/5 rounded-lg border border-white/10">📝</div> <span className="text-lg"><strong className="text-white">Data Akurat:</strong> Informasi diet dan kehadiran tercatat.</span></li>
-            </ul>
-          </motion.div>
-          <motion.div variants={fadeInUp} className="flex-1 w-full aspect-square max-h-[500px] rounded-[2.5rem] glass-card flex items-center justify-center overflow-hidden relative group">
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#8b5cf6]/20 to-primary/20 group-hover:scale-110 transition-transform duration-700" />
-            <div className="relative z-10 text-white/50 font-medium text-xl">Ilustrasi Manajemen Tamu</div>
-          </motion.div>
-        </motion.div>
-
+          className="absolute top-[20%] -right-[10%] w-[700px] h-[700px] bg-secondary/20 blob" 
+          animate={{ x: [0, -40, 0], y: [0, 60, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div 
+          className="absolute -bottom-[10%] left-[20%] w-[800px] h-[800px] bg-[#8b5cf6]/10 blob" 
+          animate={{ x: [0, 30, 0], y: [0, -50, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+        />
       </div>
 
-      {/* Why Choose Us */}
-      <motion.div 
-        className="relative z-10 w-full max-w-6xl mx-auto px-6 mt-40 text-center"
-        initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
-      >
-        <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-black tracking-tight mb-6">Kenapa Memilih Baswara?</motion.h2>
-        <motion.p variants={fadeInUp} className="text-xl text-muted-foreground max-w-2xl mx-auto mb-16 font-light">Dirancang untuk skala apa pun—dari kumpul keluarga hingga konferensi nasional—kami memastikan acaramu berjalan tanpa hambatan.</p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-          {[
-            { icon: "🎯", title: "Skalabilitas Tinggi", desc: "Dari 10 orang hingga festival ribuan peserta." },
-            { icon: "🛡️", title: "Andal & Aman", desc: "Dipercaya oleh event organizer profesional." },
-            { icon: "⭐", title: "Premium Design", desc: "Tingkatkan citra acaramu dengan UI berkelas." },
-            { icon: "⚡", title: "Super Cepat", desc: "Sistem yang dioptimasi untuk kecepatan tinggi." }
-          ].map((feature, i) => (
-            <motion.div key={i} variants={fadeInUp}>
-              <Card className="glass-card h-full bg-card/10">
-                <CardHeader>
-                  <div className="text-4xl mb-4">{feature.icon}</div>
-                  <CardTitle className="text-xl font-bold">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base text-muted-foreground">{feature.desc}</CardDescription>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-      
-      {/* CTA Section */}
-      <motion.div 
-        className="relative z-10 w-full max-w-4xl mx-auto px-6 mt-40 mb-20"
-        initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInUp}
-      >
-        <div className="relative rounded-[3rem] p-1 overflow-hidden">
-          {/* Animated gradient border */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary via-[#8b5cf6] to-secondary animate-pulse" />
+      {/* Hero Section */}
+      <section className="relative z-10 pt-32 pb-24 md:pt-48 md:pb-40 px-6">
+        <motion.div 
+          className="max-w-7xl mx-auto"
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
+          <motion.div variants={fadeInUp} className="flex items-center gap-3 mb-8">
+            <span className="h-[1px] w-12 bg-primary/50" />
+            <span className="text-sm font-medium tracking-[0.2em] uppercase text-primary">Masa Depan RSVP Acara</span>
+          </motion.div>
           
-          <div className="relative bg-background/90 backdrop-blur-3xl p-12 md:p-20 rounded-[2.9rem] text-center border border-white/10">
-            <h2 className="text-4xl md:text-5xl font-black mb-6">Siap menyelenggarakan acara terbaikmu?</h2>
-            <p className="text-xl text-muted-foreground mb-10 font-light max-w-2xl mx-auto">Mulai gunakan platform kami sekarang atau hubungi tim kami untuk konsultasi skala enterprise.</p>
-            <Link href="/dashboard" className={buttonVariants({ size: "lg", className: "h-14 px-10 text-lg rounded-full shadow-[0_0_30px_rgba(236,72,153,0.3)] hover:shadow-[0_0_50px_rgba(236,72,153,0.6)] transition-all" })}>
-              Mulai Gratis Sekarang
-            </Link>
+          <motion.h1 variants={fadeInUp} className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] mb-12">
+            BASWARA <br />
+            <span className="editorial-heading text-primary/80 block mt-4 ml-[0.1em]">Event Excellence.</span>
+          </motion.h1>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+            <motion.div variants={fadeInUp} className="lg:col-span-6">
+              <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-light max-w-xl">
+                Tingkatkan prestise acaramu dengan undangan digital premium dan manajemen RSVP yang mulus. Dirancang untuk mereka yang menghargai perpaduan teknologi dan kemewahan.
+              </p>
+            </motion.div>
+            
+            <motion.div variants={fadeInUp} className="lg:col-span-6 flex flex-col sm:flex-row gap-6 lg:justify-end">
+              <Link href="/dashboard" className={buttonVariants({ size: "lg", className: "h-16 px-10 text-lg rounded-none bg-primary hover:bg-primary/90 transition-all duration-500 group" })}>
+                Mulai Sekarang <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link href="#features" className={buttonVariants({ size: "lg", variant: "outline", className: "h-16 px-10 text-lg rounded-none border-white/10 hover:bg-white/5 transition-all duration-500" })}>
+                Jelajahi Fitur
+              </Link>
+            </motion.div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Stats Section - Refined */}
+      <section className="relative z-10 py-24 border-y border-white/5 bg-white/[0.02]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-24">
+            {[
+              { label: "Acara Sukses", value: "10K+" },
+              { label: "Data RSVP", value: "1.5M" },
+              { label: "Template Desain", value: "48+" },
+              { label: "Pengguna Aktif", value: "250K" }
+            ].map((stat, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="space-y-2"
+              >
+                <h3 className="text-4xl md:text-6xl font-black tracking-tighter text-foreground">{stat.value}</h3>
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-semibold">{stat.label}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
-      </motion.div>
+      </section>
 
+      {/* Features Bento Grid */}
+      <section id="features" className="relative z-10 py-32 md:py-48 px-6">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="max-w-2xl">
+              <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-6">Kapabilitas Utama</h2>
+              <p className="text-4xl md:text-6xl font-black tracking-tighter leading-none italic font-serif">
+                Segala hal yang Anda butuhkan untuk momen sempurna.
+              </p>
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-[300px]">
+            {/* Feature 1: Large Bento */}
+            <motion.div 
+              className="md:col-span-8 md:row-span-2 glass-card rounded-3xl p-10 flex flex-col justify-between group overflow-hidden"
+              whileHover={{ y: -5 }}
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
+            >
+              <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Calendar size={240} className="text-primary rotate-12" />
+              </div>
+              <div className="relative z-10 space-y-6">
+                <div className="h-12 w-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
+                  <Calendar size={24} />
+                </div>
+                <h3 className="text-3xl md:text-4xl font-black tracking-tight">Undangan Digital Premium</h3>
+                <p className="text-lg text-muted-foreground max-w-md font-light leading-relaxed">
+                  Desain halaman acara yang indah dan responsif sesuai identitas brand atau gaya personal Anda. Dari minimalisme pernikahan hingga branding korporat.
+                </p>
+              </div>
+              <div className="relative z-10 flex gap-4">
+                <span className="px-4 py-1.5 rounded-full border border-foreground/10 text-xs font-bold uppercase tracking-wider text-foreground/60">Desain Responsif</span>
+                <span className="px-4 py-1.5 rounded-full border border-foreground/10 text-xs font-bold uppercase tracking-wider text-foreground/60">Optimasi SEO</span>
+              </div>
+            </motion.div>
+
+            {/* Feature 2: Square Bento */}
+            <motion.div 
+              className="md:col-span-4 md:row-span-1 glass-card rounded-3xl p-10 flex flex-col justify-between group"
+              whileHover={{ y: -5 }}
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
+            >
+              <div className="h-12 w-12 rounded-2xl bg-secondary/20 flex items-center justify-center text-secondary">
+                <Users size={24} />
+              </div>
+              <h3 className="text-2xl font-black tracking-tight">RSVP Cerdas</h3>
+              <p className="text-sm text-muted-foreground font-light leading-relaxed">
+                Pelacakan tamu otomatis dan konfirmasi dengan analitik real-time.
+              </p>
+            </motion.div>
+
+            {/* Feature 3: Square Bento */}
+            <motion.div 
+              className="md:col-span-4 md:row-span-1 glass-card rounded-3xl p-10 flex flex-col justify-between group"
+              whileHover={{ y: -5 }}
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
+            >
+              <div className="h-12 w-12 rounded-2xl bg-[#8b5cf6]/20 flex items-center justify-center text-[#8b5cf6]">
+                <Zap size={24} />
+              </div>
+              <h3 className="text-2xl font-black tracking-tight">Notifikasi Instan</h3>
+              <p className="text-sm text-muted-foreground font-light leading-relaxed">
+                Dapatkan pemberitahuan via WhatsApp atau Email segera setelah tamu merespons.
+              </p>
+            </motion.div>
+
+            {/* Feature 4: Medium Bento */}
+            <motion.div 
+              className="md:col-span-12 md:row-span-1 glass-card rounded-3xl p-10 flex items-center justify-between group overflow-hidden"
+              whileHover={{ y: -5 }}
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
+            >
+              <div className="flex-1 space-y-4">
+                <h3 className="text-2xl md:text-3xl font-black tracking-tight">Aman & Privat</h3>
+                <p className="text-base text-muted-foreground font-light leading-relaxed max-w-xl">
+                  Data acara Anda dilindungi dengan enkripsi kelas enterprise. Kami menghormati privasi Anda dan seluruh tamu undangan Anda.
+                </p>
+              </div>
+              <div className="hidden md:flex h-20 w-20 rounded-full bg-foreground/5 items-center justify-center border border-foreground/10">
+                <Shield size={32} className="text-foreground/40" />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial Section - High Editorial */}
+      <section className="relative z-10 py-32 md:py-48 px-6 bg-primary/5 overflow-hidden">
+        <div className="max-w-7xl mx-auto text-center relative">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="absolute -top-24 left-1/2 -translate-x-1/2 text-[20rem] font-serif italic text-primary/5 select-none pointer-events-none"
+          >
+            &ldquo;
+          </motion.div>
+          <motion.div 
+            className="max-w-4xl mx-auto space-y-12"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+          >
+            <blockquote className="text-3xl md:text-5xl lg:text-6xl font-serif italic font-light leading-tight tracking-tight text-foreground">
+              &ldquo;Baswara telah mengubah cara kami menangani peluncuran korporat. Tingkat kehalusan dan perhatian terhadap detail di platform mereka tidak tertandingi di industri ini.&rdquo;
+            </blockquote>
+            <div className="space-y-2">
+              <div className="text-primary font-bold tracking-widest uppercase text-sm">Alexandra Vane</div>
+              <div className="text-muted-foreground text-xs font-medium uppercase tracking-[0.2em]">Direktur Acara, Lumina Creative</div>
+            </div>
+            <div className="flex justify-center gap-1">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star key={s} size={16} className="fill-primary text-primary" />
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Final CTA / Signup */}
+      <section className="relative z-10 py-32 md:py-64 px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-12"
+          >
+            <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">
+              SIAP UNTUK <br />
+              <span className="editorial-heading text-primary italic font-serif">Melampaui Ekspektasi?</span>
+            </h2>
+            <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto">
+              Bergabunglah dengan 5.000+ penyelenggara yang mempercayakan momen terpenting mereka kepada Baswara. Daftar untuk akses awal fitur premium.
+            </p>
+            <div className="flex flex-col items-center gap-8">
+              <div className="w-full max-w-md flex flex-col sm:flex-row gap-4">
+                <input 
+                  type="email" 
+                  placeholder="Masukkan email Anda" 
+                  className="flex-1 h-16 px-6 bg-foreground/5 border border-foreground/10 text-lg focus:outline-none focus:border-primary/50 transition-colors placeholder:text-muted-foreground/60"
+                />
+                <Button className="h-16 px-10 text-lg rounded-none bg-primary hover:bg-primary/90">
+                  Gabung Daftar Tunggu
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold flex items-center gap-2">
+                <CheckCircle2 size={14} className="text-primary" /> Tanpa kartu kredit. Batalkan kapan saja.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer Minimalist */}
+      <footer className="relative z-10 py-12 border-t border-foreground/5 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-4">
+            <span className="text-2xl font-black tracking-tighter">BASWARA</span>
+            <span className="h-4 w-[1px] bg-foreground/20 hidden md:block" />
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">© 2026 Baswara Digital. Seluruh hak cipta dilindungi.</span>
+          </div>
+          <div className="flex gap-8 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold">
+            <Link href="#" className="hover:text-primary transition-colors">Kebijakan Privasi</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Syarat & Ketentuan</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Hubungi Kami</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
