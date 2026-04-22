@@ -43,30 +43,30 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Image Content - Optimized for Cropped Image */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative z-10 w-full max-w-[650px] lg:max-w-full">
+            {/* Right Image Content - Scaled to 80% and Corner Positioned */}
+            <div className="relative flex justify-end">
+              <div className="relative z-10 w-[80%] max-w-[500px] lg:translate-x-12 translate-y-8">
                 {/* Decorative Framing Circle */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[115%] h-[115%] border border-[#fd5e4b]/10 rounded-full -z-10" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-[#fd5e4b]/10 rounded-full -z-10" />
                 
                 {/* Ambient Glows */}
-                <div className="absolute top-0 right-[-15%] w-80 h-80 bg-[#fecf00]/15 blur-[100px] -z-10 rounded-full" />
-                <div className="absolute bottom-0 left-[-15%] w-96 h-96 bg-[#fd5e4b]/15 blur-[120px] -z-10 rounded-full" />
+                <div className="absolute top-0 right-[-10%] w-72 h-72 bg-[#fecf00]/15 blur-[100px] -z-10 rounded-full" />
+                <div className="absolute bottom-0 left-[-10%] w-80 h-80 bg-[#fd5e4b]/15 blur-[120px] -z-10 rounded-full" />
                 
-                {/* The Cropped Phone Image */}
+                {/* The Phone Image */}
                 <div className="relative z-10 drop-shadow-[-30px_50px_100px_rgba(107,29,29,0.15)]">
                   <Image 
                     src="/Phone.png" 
                     alt="Baswara App Preview" 
-                    width={1600} 
-                    height={1600} 
-                    className="w-full h-auto object-contain scale-110"
+                    width={1200} 
+                    height={1400} 
+                    className="w-full h-auto object-contain"
                     priority
                   />
                 </div>
 
                 {/* Grounding Shadow */}
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[85%] h-10 bg-[#6b1d1d]/10 blur-3xl rounded-[100%] -z-10" />
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[90%] h-10 bg-[#6b1d1d]/10 blur-3xl rounded-[100%] -z-10" />
               </div>
             </div>
           </div>
