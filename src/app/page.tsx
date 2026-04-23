@@ -27,11 +27,14 @@ export default function Home() {
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-[#fedbdf] text-[#6b1d1d] selection:bg-[#fd5e4b] selection:text-white font-sans">
+      {/* Texture Overlay (Dots) */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(#6b1d1d 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
+      
       {/* Noise Overlay */}
-      <div className="noise-overlay opacity-[0.03]" />
+      <div className="noise-overlay opacity-[0.06]" />
       
       {/* Hero Section */}
-      <section className="relative z-10 px-6 lg:px-12 pt-40 pb-20">
+      <section className="relative z-10 px-6 lg:px-12 pt-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             {/* Left Content */}
@@ -143,7 +146,7 @@ export default function Home() {
             {/* Feature 1: Large Artisan Card (Digital Invitation) */}
             <motion.div 
               whileHover={{ y: -10 }}
-              className="md:col-span-8 bg-[#fedbdf]/40 rounded-[4rem] p-16 flex flex-col md:flex-row gap-12 items-center overflow-hidden border border-[#fd5e4b]/10 shadow-2xl shadow-[#fd5e4b]/5 group"
+              className="md:col-span-8 bg-[#fedbdf]/40 rounded-3xl p-16 flex flex-col md:flex-row gap-12 items-center overflow-hidden border border-[#fd5e4b]/10 shadow-2xl shadow-[#fd5e4b]/5 group"
             >
               <div className="flex-1 space-y-8">
                 <div className="h-16 w-16 rounded-3xl bg-white flex items-center justify-center text-[#fd5e4b] shadow-xl">
@@ -170,7 +173,7 @@ export default function Home() {
             {/* Feature 2: Square Card (RSVP) */}
             <motion.div 
               whileHover={{ y: -10 }}
-              className="md:col-span-4 bg-[#fecf00] rounded-[4rem] p-12 flex flex-col justify-between shadow-2xl border border-white/20 group"
+              className="md:col-span-4 bg-[#fecf00] rounded-3xl p-12 flex flex-col justify-between shadow-2xl border border-white/20 group"
             >
               <div className="h-16 w-16 rounded-3xl bg-white/20 flex items-center justify-center text-[#6b1d1d] backdrop-blur-md">
                 <Users size={32} />
@@ -187,7 +190,7 @@ export default function Home() {
             {/* Feature 3: Medium Card (Notifikasi) */}
             <motion.div 
               whileHover={{ y: -10 }}
-              className="md:col-span-6 bg-[#fd8391] rounded-[4rem] p-12 flex flex-col md:flex-row gap-8 items-center shadow-2xl border border-white/20"
+              className="md:col-span-6 bg-[#fd8391] rounded-3xl p-12 flex flex-col md:flex-row gap-8 items-center shadow-2xl border border-white/20"
             >
               <div className="h-16 w-16 rounded-3xl bg-white/20 flex items-center justify-center text-white shrink-0">
                 <Zap size={32} />
@@ -201,7 +204,7 @@ export default function Home() {
             {/* Feature 4: Medium Card (Aman) */}
             <motion.div 
               whileHover={{ y: -10 }}
-              className="md:col-span-6 bg-[#6b1d1d] rounded-[4rem] p-12 flex flex-col md:flex-row gap-8 items-center shadow-2xl border border-white/5"
+              className="md:col-span-6 bg-[#6b1d1d] rounded-3xl p-12 flex flex-col md:flex-row gap-8 items-center shadow-2xl border border-white/5"
             >
               <div className="h-16 w-16 rounded-3xl bg-white/10 flex items-center justify-center text-[#fd5e4b] shrink-0">
                 <Shield size={32} />
@@ -228,7 +231,7 @@ export default function Home() {
               { title: "Teknologi Handal", desc: "Sistem RSVP kami dirancang untuk menangani ribuan tamu tanpa hambatan.", icon: <Zap size={32} /> },
               { title: "Dukungan Personal", desc: "Tim ahli kami mendampingi setiap langkah Anda untuk kesempurnaan acara.", icon: <Heart size={32} /> }
             ].map((item, idx) => (
-              <div key={idx} className="p-12 bg-white rounded-[3rem] shadow-xl hover:scale-105 transition-all duration-500 border border-[#6b1d1d]/5">
+              <div key={idx} className="p-12 bg-white rounded-3xl shadow-xl hover:scale-105 transition-all duration-500 border border-[#6b1d1d]/5">
                 <div className="text-[#fd5e4b] mb-8">{item.icon}</div>
                 <h3 className="text-2xl font-black tracking-tighter text-[#6b1d1d] uppercase mb-4">{item.title}</h3>
                 <p className="text-lg text-[#6b1d1d]/60 font-medium leading-relaxed">{item.desc}</p>
@@ -268,6 +271,50 @@ export default function Home() {
                   <div className="text-[#6b1d1d]/40 text-[9px] font-bold uppercase tracking-widest">{review.role}</div>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="relative z-10 py-32 md:py-48 px-6 bg-[#fedbdf]/20 border-y border-[#6b1d1d]/5 text-[#6b1d1d]">
+        <div className="max-w-7xl mx-auto space-y-20">
+          <div className="text-center space-y-4">
+             <h2 className="text-4xl md:text-5xl font-black text-[#6b1d1d]">Select a Plan <br/>According to Your Need</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+               { name: "Starter Plan", price: "Rp 500k", color: "bg-[#6b1d1d]", textColor: "text-white" },
+               { name: "Pro Plan", price: "Rp 1.5M", color: "bg-[#fd5e4b]", textColor: "text-white" },
+               { name: "Premium Plan", price: "Rp 3.0M", color: "bg-[#fecf00]", textColor: "text-[#6b1d1d]" }
+            ].map((plan, idx) => (
+                <div key={idx} className="rounded-[2.5rem] bg-white border border-[#6b1d1d]/5 shadow-xl overflow-hidden flex flex-col hover:scale-[1.02] transition-transform duration-500">
+                   <div className={`${plan.color} ${plan.textColor} p-8 lg:p-10`}>
+                       <p className="text-xs font-bold uppercase tracking-widest opacity-80 mb-2">Baswara Experience</p>
+                       <h3 className="text-2xl font-black mb-4">{plan.name}</h3>
+                       <div className="flex items-end gap-2">
+                          <span className="text-4xl lg:text-5xl font-black tracking-tighter">{plan.price}</span>
+                          <span className="text-sm font-bold opacity-80 pb-2">/ event</span>
+                       </div>
+                   </div>
+                   <div className="p-8 lg:p-10 flex-1 flex flex-col gap-8">
+                       <ul className="space-y-4 flex-1">
+                          {[
+                            "Premium Digital Invitation",
+                            "Real-time RSVP Tracking",
+                            "Up to " + (idx === 0 ? "500" : idx === 1 ? "2,000" : "Unlimited") + " Guests",
+                            idx >= 1 ? "WhatsApp Reminders" : "Email Notifications",
+                            idx === 2 ? "Dedicated Event Manager" : "Standard Support"
+                          ].map((feature, i) => (
+                              <li key={i} className="flex items-center gap-4 text-sm font-medium text-[#6b1d1d]/70">
+                                  <CheckCircle2 size={18} className="text-[#fd5e4b]" />
+                                  {feature}
+                              </li>
+                          ))}
+                       </ul>
+                       <Button className="w-full h-14 rounded-full bg-[#6b1d1d] hover:bg-[#fd5e4b] text-white border-none font-bold transition-all text-sm uppercase tracking-widest shadow-lg">Get Started</Button>
+                   </div>
+                </div>
             ))}
           </div>
         </div>
