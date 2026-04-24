@@ -9,11 +9,10 @@ export default function Navbar() {
         <Link href="/" className="flex items-center">
           <Image src="/Main-logo.svg" alt="Baswara Logo" width={180} height={50} className="h-10 w-auto" priority />
         </Link>
-        <div className="flex gap-6 items-center">
-          <Link href="/dashboard" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
-            Dashboard
+        <div className="flex items-center">
+          <Link href="/onboarding" className={buttonVariants({ className: "bg-[#fd5e4b] hover:bg-[#6b1d1d] text-white rounded-full px-8 transition-all duration-300 font-bold uppercase tracking-widest text-xs" })}>
+            Mulai Sekarang
           </Link>
-          <Link href="/events/new" className={buttonVariants({ className: "bg-primary text-white rounded-none px-6" })}>Create Event</Link>
         </div>
       </div>
     </nav>
