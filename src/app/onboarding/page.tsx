@@ -5,19 +5,22 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import ProgressIndicator from "@/components/onboarding/ProgressIndicator";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
+import AccountStep from "@/components/onboarding/AccountStep";
 import RoleStep from "@/components/onboarding/RoleStep";
 import PreferenceStep from "@/components/onboarding/PreferenceStep";
+import SuccessStep from "@/components/onboarding/SuccessStep";
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
     role: "",
     theme: "",
   });
 
-  const totalSteps = 3;
+  const totalSteps = 5;
 
   const handleNext = (data: Partial<typeof formData>) => {
     const updatedData = { ...formData, ...data };
@@ -25,15 +28,15 @@ export default function OnboardingPage() {
     
     if (step < totalSteps) {
       setStep(step + 1);
-    } else {
-      // Final submission
-      console.log("Onboarding Complete:", updatedData);
-      router.push("/dashboard");
     }
   };
 
   const handleBack = () => {
-    if (step > 1) setStep(step - 1);
+    if (step > 1 && step < 5) setStep(step - 1);
+  };
+
+  const handleComplete = () => {
+    router.push("/dashboard");
   };
 
   return (
@@ -63,7 +66,18 @@ export default function OnboardingPage() {
       />
 
       <div className="w-full max-w-4xl relative z-10">
-        <ProgressIndicator currentStep={step} totalSteps={totalSteps} />
+        <AnimatePresence mode="wait">
+          {step < 5 && (
+            <motion.div
+              key="progress"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <ProgressIndicator currentStep={step} totalSteps={totalSteps} />
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         <div className="min-h-[500px] flex items-center justify-center">
           <AnimatePresence mode="wait">
@@ -71,10 +85,16 @@ export default function OnboardingPage() {
               <WelcomeStep key="step1" onNext={handleNext} initialData={formData} />
             )}
             {step === 2 && (
-              <RoleStep key="step2" onNext={handleNext} onBack={handleBack} initialData={formData} />
+              <AccountStep key="step2" onNext={handleNext} onBack={handleBack} initialData={formData} />
             )}
             {step === 3 && (
-              <PreferenceStep key="step3" onNext={handleNext} onBack={handleBack} initialData={formData} />
+              <RoleStep key="step3" onNext={handleNext} onBack={handleBack} initialData={formData} />
+            )}
+            {step === 4 && (
+              <PreferenceStep key="step4" onNext={handleNext} onBack={handleBack} initialData={formData} />
+            )}
+            {step === 5 && (
+              <SuccessStep key="step5" onComplete={handleComplete} data={formData} />
             )}
           </AnimatePresence>
         </div>
