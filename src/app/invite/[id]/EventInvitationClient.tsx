@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import HeroSection from "./sections/HeroSection";
 import OrganizersSection from "./sections/OrganizersSection";
 import CountdownSection from "./sections/CountdownSection";
@@ -71,21 +72,13 @@ export const DEFAULT_EVENT_DATA: EventInvitationData = {
   gallery: [
     "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=400&fit=crop",
     "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1529636798458-92182e662485?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1470290378698-263fa7ca60ab?w=600&h=400&fit=crop",
   ],
   story: [
     { year: "2019", title: "Pertama Bertemu", desc: "Kami bertemu di sebuah acara kampus dan langsung merasa ada yang spesial." },
-    { year: "2020", title: "Mulai Bersama", desc: "Setelah setahun berteman, kami memutuskan untuk menjalin hubungan yang lebih serius." },
-    { year: "2023", title: "Lamaran", desc: "Di tepi pantai saat matahari terbenam, Adrian melamar Ariana dengan cincin keluarga." },
-    { year: "2026", title: "Hari Pernikahan", desc: "Hari yang kami nantikan akhirnya tiba. Bersatu selamanya." },
   ],
   gift: {
     banks: [
       { bank: "BCA", accountName: "Adrian Ramadhan", accountNumber: "1234567890" },
-      { bank: "Mandiri", accountName: "Ariana Dewi", accountNumber: "0987654321" },
     ],
     address: "Jl. Melati No. 7, Kemang, Jakarta Selatan 12730",
   },
@@ -134,6 +127,7 @@ export default function EventInvitationClient({
   selectedSection?: string
 }) {
   const [opened, setOpened] = useState(forceOpen);
+  const [isOpening, setIsOpening] = useState(false);
   
   const data = useMemo(() => {
     if (!initialData) return DEFAULT_EVENT_DATA;
@@ -186,6 +180,18 @@ export default function EventInvitationClient({
 
   const currentTemplate = data.templateId || "classic";
 
+  const handleOpen = () => {
+    if (onSectionSelect) {
+      onSectionSelect('general');
+    } else {
+      setIsOpening(true);
+      setTimeout(() => {
+        setOpened(true);
+        setIsOpening(false);
+      }, 1500); // Animation duration
+    }
+  };
+
   return (
     <div 
       className={`invite-root view-${viewMode} orient-${orientation} tpl-${currentTemplate} type-${data.eventType}`} 
@@ -217,33 +223,70 @@ export default function EventInvitationClient({
         {!opened ? (
           <div 
             className="invite-envelope" 
-            onClick={() => {
-              if (onSectionSelect) {
-                onSectionSelect('general');
-              } else {
-                setOpened(true);
-              }
-            }}
             style={{
-              backgroundImage: data.envelopeImage ? `linear-gradient(rgba(250,247,242,0.6), rgba(250,247,242,0.6)), url(${data.envelopeImage})` : undefined,
+              backgroundImage: data.envelopeImage ? `linear-gradient(rgba(250,247,242,0.8), rgba(250,247,242,0.8)), url(${data.envelopeImage})` : undefined,
               backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              cursor: 'pointer'
+              backgroundPosition: 'center'
             }}
           >
-            <div className="envelope-icon">
-              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="12" width="60" height="40" rx="4" fill="#fff" stroke="var(--inv-primary)" strokeWidth="2"/>
-                <path d="M2 16l30 22L62 16" stroke="var(--inv-primary)" strokeWidth="2" fill="none"/>
-              </svg>
+            {/* Animated Envelope Wrapper */}
+            <div className="env-wrapper">
+               {/* Subtle Glow */}
+               <motion.div 
+                 className="env-glow"
+                 animate={{ scale: [1, 1.2, 1], opacity: [0.08, 0.12, 0.08] }}
+                 transition={{ duration: 4, repeat: Infinity }}
+               />
+
+               {/* Flap */}
+               <motion.div 
+                 className="env-flap"
+                 animate={isOpening ? { rotateX: 160, zIndex: 1, filter: "brightness(0.95)" } : { rotateX: 0, zIndex: 4 }}
+                 transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+               />
+               
+               {/* Card (Slides Up with floating effect) */}
+               <motion.div 
+                 className="env-card"
+                 animate={isOpening ? { y: -160, x: 2, rotate: -1, scale: 1.02 } : { y: 0, x: 0, rotate: 0, scale: 1 }}
+                 transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+               >
+                  <img src="/Main-logo.svg" alt="" className="env-card-logo" />
+                  <p className="env-card-names">{data.title}</p>
+               </motion.div>
+
+               {/* Envelope Body */}
+               <div className="env-body" />
             </div>
-            <p className="envelope-greeting">{data.greeting}</p>
-            <p className="envelope-name">{data.guestName}</p>
-            <button className="envelope-btn">Buka Undangan ✦</button>
-            <p className="envelope-sub">Klik untuk membuka undangan</p>
+
+            <div className="z-10 text-center space-y-6">
+              <div className="space-y-1">
+                <p className="envelope-greeting">{data.greeting}</p>
+                <p className="envelope-name">{data.guestName}</p>
+              </div>
+              
+              <button 
+                className={cn(
+                  "envelope-btn transition-all duration-700",
+                  isOpening && "opacity-0 translate-y-4 pointer-events-none"
+                )}
+                onClick={handleOpen}
+              >
+                Buka Undangan
+              </button>
+              
+              <p className={cn("envelope-sub transition-opacity duration-700", isOpening && "opacity-0")}>
+                Momen spesial segera dimulai
+              </p>
+            </div>
           </div>
         ) : (
-          <div className="invite-content">
+          <motion.div 
+            className="invite-content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          >
             <SectionWrapper id="general" active={selectedSection === 'general'} onClick={onSectionSelect}>
                <HeroSection data={data as any} />
             </SectionWrapper>
