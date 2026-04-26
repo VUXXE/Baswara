@@ -1,11 +1,11 @@
-import { WeddingData } from "./types";
+import { EventInvitationData } from "./types";
 
 export interface TemplateDefinition {
   id: string;
   name: string;
   thumbnail: string;
   description: string;
-  defaultData: Partial<WeddingData>;
+  defaultData: Partial<EventInvitationData>;
 }
 
 export const TEMPLATES: TemplateDefinition[] = [

@@ -4,18 +4,18 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, User } from "lucide-react";
 
 interface WelcomeStepProps {
-  onNext: (data: { name: string }) => void;
-  initialData: { name: string };
+  value: string;
+  onChange: (v: string) => void;
+  onNext: () => void;
 }
 
-export default function WelcomeStep({ onNext, initialData }: WelcomeStepProps) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+export default function WelcomeStep({ value, onChange, onNext }: WelcomeStepProps) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    onNext({ name: formData.get("name") as string });
+    if (value.trim()) onNext();
   };
 
   return (
@@ -23,39 +23,41 @@ export default function WelcomeStep({ onNext, initialData }: WelcomeStepProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="space-y-8"
+      className="space-y-10"
     >
-      <div className="text-center space-y-4">
-        <h2 className="text-4xl md:text-5xl font-serif text-[#6b1d1d] italic">
-          Selamat Datang di Baswara
+      <div className="space-y-4">
+        <img src="/Main-logo.svg" alt="Baswara" className="h-10 w-auto mb-6" />
+        <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-zinc-900 leading-none">
+          Hi, we're <br /><span className="text-[#fd5e4b]">Baswara</span>.
         </h2>
-        <p className="text-[#6b1d1d]/70 max-w-md mx-auto leading-relaxed">
-          Kami sangat senang bisa membantu Anda merencanakan momen spesial. Mari kita mulai dengan perkenalan singkat.
+        <p className="text-muted-foreground font-medium text-lg leading-relaxed">
+          Let's create something extraordinary together. To start, what should we call you?
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-sm mx-auto space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="name" className="text-[#6b1d1d] font-medium ml-1">
-            Siapa nama lengkap Anda?
-          </Label>
-          <Input
-            id="name"
-            name="name"
-            placeholder="Masukkan nama Anda..."
-            defaultValue={initialData.name}
-            required
-            autoFocus
-            className="bg-white/50 border-[#6b1d1d]/20 focus:border-[#fd5e4b] focus:ring-[#fd5e4b] text-[#6b1d1d] h-12"
-          />
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="space-y-3">
+          <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Your Name / Organization</Label>
+          <div className="relative group">
+            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-[#fd5e4b] transition-colors" />
+            <Input 
+              placeholder="Enter your name..."
+              className="h-14 pl-12 rounded-2xl bg-[#fafafa] border-2 border-zinc-100 focus-visible:ring-0 focus-visible:border-[#fd5e4b] text-lg font-bold transition-all"
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              autoFocus
+              required
+            />
+          </div>
         </div>
 
         <Button 
           type="submit" 
-          className="w-full bg-[#6b1d1d] hover:bg-[#831843] text-[#fedbdf] h-12 text-lg font-medium group transition-all duration-300"
+          disabled={!value.trim()}
+          className="w-full bg-zinc-900 hover:bg-[#6b1d1d] text-white h-16 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-zinc-900/10 group disabled:opacity-50"
         >
-          Lanjutkan
-          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          START CREATING
+          <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
         </Button>
       </form>
     </motion.div>

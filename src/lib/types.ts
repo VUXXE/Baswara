@@ -21,28 +21,31 @@ export interface Guest {
   createdAt: string;
 }
 
-export interface WeddingData {
+export type EventType = 'wedding' | 'birthday' | 'seminar' | 'party' | 'corporate' | 'other';
+
+export interface EventInvitationData {
   id: string;
+  eventType: EventType;
   templateId: string;
-  hashtag: string;
+  hashtag?: string;
   greeting: string;
   guestName: string;
-  couple: {
-    groom: {
-      name: string;
-      fullName: string;
-      parents: string;
-      photo: string;
-      instagram: string;
-    };
-    bride: {
-      name: string;
-      fullName: string;
-      parents: string;
-      photo: string;
-      instagram: string;
-    };
-  };
+  
+  // General event info
+  title: string;
+  subTitle?: string;
+  description?: string;
+  
+  // Specific for weddings but generic enough for others
+  organizers?: {
+    name: string;
+    fullName: string;
+    photo?: string;
+    instagram?: string;
+    role?: string; // e.g. "Groom", "Bride", "Birthday Boy", "Host"
+    subText?: string; // e.g. parents info
+  }[];
+
   events: {
     name: string;
     date: string;
@@ -52,19 +55,24 @@ export interface WeddingData {
     mapsUrl: string;
     googleMapsEmbedUrl?: string;
   }[];
-  weddingDate: string;
-  dresscode: {
+  
+  mainDate: string;
+  
+  dresscode?: {
     theme: string;
     palette: string[];
     note: string;
   };
-  gallery: string[];
-  story: {
+  
+  gallery?: string[];
+  
+  story?: {
     year: string;
     title: string;
     desc: string;
   }[];
-  gift: {
+  
+  gift?: {
     banks: {
       bank: string;
       accountName: string;
@@ -72,6 +80,7 @@ export interface WeddingData {
     }[];
     address: string;
   };
+  
   theme: {
     primaryColor: string;
     secondaryColor: string;
@@ -96,16 +105,11 @@ export interface WeddingData {
       transform: 'uppercase' | 'lowercase' | 'capitalize' | 'none';
     };
   };
-  user?: {
-    phoneNumber: string;
-    address: string;
-    email: string;
-  };
 }
 
 export interface RSVP {
   id: string;
-  wedding_id: string;
+  invitation_id: string;
   name: string;
   phone_number: string;
   guest_count: number;

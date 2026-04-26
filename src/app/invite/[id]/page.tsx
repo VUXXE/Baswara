@@ -1,30 +1,29 @@
 import { Metadata } from 'next';
-import WeddingInviteClient from './WeddingInviteClient';
+import EventInvitationClient from './EventInvitationClient';
 import { supabase } from '@/lib/supabase';
-import { WeddingData } from '@/lib/types';
+import { EventInvitationData } from '@/lib/types';
 
 export const metadata: Metadata = {
-  title: 'Wedding Invitation | Baswara',
-  description: 'You are cordially invited to celebrate our wedding day.',
+  title: 'Undangan Digital | Baswara',
+  description: 'Anda diundang untuk menyaksikan momen bahagia kami.',
 };
 
-export default async function InvitePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function InvitationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  // Fetch from Supabase
-  const { data: wedding, error } = await supabase
-    .from('weddings')
-    .select('id, data')
-    .eq('slug', id)
+  // Fetch invitation data from Supabase
+  const { data: invitation, error } = await supabase
+    .from('invitations')
+    .select('*')
+    .eq('id', id)
     .single();
 
-  if (error || !wedding) {
-    console.error('Error fetching wedding or not found:', error);
-    // Return the client with mock data as fallback or 404
-    return <WeddingInviteClient id={id} />;
+  if (error || !invitation) {
+    // If not found in DB, return the client with mock data as fallback
+    return <EventInvitationClient id={id} />;
   }
 
-  const weddingData = wedding.data as WeddingData;
+  const invitationData = invitation.data as EventInvitationData;
 
-  return <WeddingInviteClient id={id} initialData={weddingData} dbId={wedding.id} />;
+  return <EventInvitationClient id={id} initialData={invitationData} dbId={invitation.id} />;
 }

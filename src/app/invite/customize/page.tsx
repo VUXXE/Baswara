@@ -1,36 +1,35 @@
 "use client";
 
 import { useState, useEffect, Suspense, useRef } from "react";
-import WeddingInviteClient, { DEFAULT_WEDDING_DATA } from "../[id]/WeddingInviteClient";
-import { WeddingData } from "@/lib/types";
+import EventInvitationClient, { DEFAULT_EVENT_DATA } from "../[id]/EventInvitationClient";
+import { EventInvitationData, EventType } from "@/lib/types";
 import { TEMPLATES } from "@/lib/templates";
 import { supabase } from "@/lib/supabase";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
   Loader2, Plus, Trash2, Image as ImageIcon, Heart, Calendar, 
   BookOpen, Gift, Palette, Settings, ChevronRight, Save, Globe,
-  Layout as LayoutIcon, Type, Music, X, MapPin, Clock, Banknote, Monitor, Tablet, Smartphone, RotateCcw, Check
+  Layout as LayoutIcon, Type, Music, X, MapPin, Clock, Banknote, Monitor, Tablet, Smartphone, RotateCcw, Check, Users
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ImageUpload from "@/components/ImageUpload";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-type EditorTab = "templates" | "general" | "couple" | "events" | "gallery" | "story" | "gift" | "theme";
+type EditorTab = "templates" | "general" | "organizers" | "events" | "gallery" | "story" | "gift" | "theme";
 type Device = "mobile" | "tablet" | "desktop";
 type Orientation = "portrait" | "landscape";
 
 function EditorContent() {
-  const [data, setData] = useState<WeddingData>(DEFAULT_WEDDING_DATA);
+  const [data, setData] = useState<EventInvitationData>(DEFAULT_EVENT_DATA);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [editorTab, setEditorTab] = useState<EditorTab>("templates");
   const [device, setDevice] = useState<Device>("mobile");
   const [orientation, setOrientation] = useState<Orientation>("portrait");
   const [scale, setScale] = useState(1);
-  const [slug, setSlug] = useState("my-wedding");
+  const [slug, setSlug] = useState("my-event");
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   
@@ -73,15 +72,15 @@ function EditorContent() {
       }
 
       if (editId) {
-        const { data: wedding, error } = await supabase
-          .from('weddings')
+        const { data: invite, error } = await supabase
+          .from('invitations')
           .select('*')
           .eq('id', editId)
           .single();
         
-        if (wedding && !error) {
-          setData(wedding.data);
-          setSlug(wedding.slug);
+        if (invite && !error) {
+          setData(invite.data);
+          setSlug(invite.slug);
         }
       }
     };
@@ -95,11 +94,12 @@ function EditorContent() {
       if (sessionError || !session) throw new Error("You must be logged in.");
 
       const { error } = await supabase
-        .from('weddings')
+        .from('invitations')
         .upsert({
           ...(editId ? { id: editId } : {}),
           slug: slug,
           user_id: session.user.id,
+          event_type: data.eventType,
           hashtag: data.hashtag,
           data: data,
           updated_at: new Date().toISOString(),
@@ -167,50 +167,50 @@ function EditorContent() {
 
   return (
     <div className="flex flex-col h-screen bg-[#fafafa] font-sans selection:bg-primary/10 text-zinc-900">
-      <header className="h-16 border-b px-8 bg-white flex items-center justify-between sticky top-0 z-[100] shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="bg-primary/10 p-2 rounded-xl" onClick={() => router.push('/dashboard')} style={{cursor: 'pointer'}}>
-            <Heart className="text-primary fill-primary" size={20} />
+      <header className="h-16 border-b px-4 sm:px-8 bg-white flex items-center justify-between sticky top-0 z-[100] shadow-sm">
+        <div className="flex items-center gap-3">
+          <div onClick={() => router.push('/dashboard')} className="cursor-pointer bg-zinc-50 p-1 sm:p-1.5 rounded-lg border border-zinc-100 sm:bg-transparent sm:p-0 sm:rounded-none sm:border-none">
+            <img src="/Main-logo.svg" alt="Baswara" className="h-4 sm:h-6 w-auto" />
           </div>
-          <div>
-            <h1 className="text-sm font-bold tracking-tight">Baswara Studio</h1>
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Template Designer</p>
+          <div className="hidden xs:block">
+            <h1 className="text-xs sm:text-sm font-bold tracking-tight text-zinc-900 uppercase">Studio</h1>
+            <p className="hidden sm:block text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Multi-Event Designer</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
-          {lastSaved && (
-            <span className="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
-              <span className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
-              Tersimpan {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          )}
-          <div className="flex gap-2 bg-muted p-1 rounded-lg">
-            <Button variant={activeTab === "edit" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveTab("edit")} className="h-7 text-xs shadow-none">Editor</Button>
-            <Button variant={activeTab === "preview" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveTab("preview")} className="h-7 text-xs shadow-none">Preview</Button>
+        <div className="flex items-center gap-3 sm:gap-6">
+          <div className="flex bg-muted p-1 rounded-lg sm:hidden">
+            <Button variant={activeTab === "edit" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveTab("edit")} className="h-7 text-[10px] px-2 shadow-none">EDIT</Button>
+            <Button variant={activeTab === "preview" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveTab("preview")} className="h-7 text-[10px] px-2 shadow-none">VIEW</Button>
           </div>
-          <Button onClick={handleSave} disabled={isSaving} size="sm" className="rounded-full px-6 font-bold text-xs h-9 shadow-lg shadow-primary/20">
-            {isSaving ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <Save className="mr-2 h-3 w-3" />}
-            PUBLISH
+          
+          <div className="hidden sm:flex gap-2 bg-muted p-1 rounded-lg">
+            <Button variant={activeTab === "edit" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveTab("edit")} className="h-7 text-xs shadow-none px-4">Editor</Button>
+            <Button variant={activeTab === "preview" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveTab("preview")} className="h-7 text-xs shadow-none px-4">Preview</Button>
+          </div>
+
+          <Button onClick={handleSave} disabled={isSaving} size="sm" className="rounded-full px-4 sm:px-6 font-bold text-[10px] sm:text-xs h-8 sm:h-9 shadow-lg shadow-primary/20">
+            {isSaving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="sm:mr-2 h-3 w-3" />}
+            <span className="hidden sm:inline">PUBLISH</span>
           </Button>
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
-        <aside className="w-20 border-r bg-white flex flex-col items-center py-8 gap-6">
+      <div className="flex-1 flex flex-col sm:flex-row overflow-hidden relative">
+        <aside className="fixed bottom-0 left-0 right-0 h-16 sm:static sm:h-auto sm:w-20 border-t sm:border-t-0 sm:border-r bg-white flex flex-row sm:flex-col items-center justify-around sm:justify-start py-0 sm:py-8 gap-0 sm:gap-6 z-[90]">
           <NavIcon icon={<LayoutIcon size={20}/>} active={editorTab === "templates"} onClick={() => setEditorTab("templates")} />
-          <div className="h-px w-8 bg-zinc-100 my-2" />
+          <div className="hidden sm:block h-px w-8 bg-zinc-100 my-2" />
           <NavIcon icon={<Globe size={18}/>} active={editorTab === "general"} onClick={() => setEditorTab("general")} />
-          <NavIcon icon={<Heart size={18}/>} active={editorTab === "couple"} onClick={() => setEditorTab("couple")} />
+          <NavIcon icon={<Users size={18}/>} active={editorTab === "organizers"} onClick={() => setEditorTab("organizers")} />
           <NavIcon icon={<Calendar size={18}/>} active={editorTab === "events"} onClick={() => setEditorTab("events")} />
           <NavIcon icon={<ImageIcon size={18}/>} active={editorTab === "gallery"} onClick={() => setEditorTab("gallery")} />
           <NavIcon icon={<Palette size={18}/>} active={editorTab === "theme"} onClick={() => setEditorTab("theme")} />
         </aside>
 
-        <div className={`${activeTab === "edit" ? "flex" : "hidden"} md:flex flex-1 overflow-hidden bg-white`}>
-          <aside className="w-[450px] border-r overflow-y-auto px-8 py-10 scrollbar-hide">
+        <div className="flex-1 flex overflow-hidden pb-16 sm:pb-0">
+          <aside className={`${activeTab === "edit" ? "flex" : "hidden"} md:flex w-full md:w-[450px] border-r overflow-y-auto px-6 sm:px-8 py-8 sm:py-10 scrollbar-hide bg-white z-10`}>
             <AnimatePresence mode="wait">
-              <motion.div key={editorTab} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="space-y-10">
+              <motion.div key={editorTab} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }} className="space-y-10 w-full pb-10">
                 
                 {editorTab === "templates" && (
                   <div className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
@@ -230,7 +230,6 @@ function EditorContent() {
                              {data.templateId === tpl.id && <div className="bg-primary text-white p-1 rounded-full"><Check size={10}/></div>}
                            </div>
                            <p className="text-[10px] text-muted-foreground leading-relaxed pr-8">{tpl.description}</p>
-                           {/* Mini Thumbnail indicator */}
                            <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-zinc-100 rounded-full group-hover:scale-110 transition-transform flex items-center justify-center text-zinc-300">
                               <LayoutIcon size={24} />
                            </div>
@@ -243,37 +242,68 @@ function EditorContent() {
                 {editorTab === "general" && (
                   <div className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
                     <SectionTitle title="General Settings" subtitle="Setup your invitation identity and link." />
-                    <SectionCard title="Identity">
+                    <SectionCard title="Event Identity">
                       <Field label="URL Slug" sublabel="Your unique web link">
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] text-muted-foreground">baswara.com/</span>
                           <Input className="h-8 text-xs font-mono" value={slug} onChange={e => setSlug(e.target.value.toLowerCase().replace(/\s+/g, '-'))} />
                         </div>
                       </Field>
+                      <div className="space-y-1.5">
+                        <Label className="text-[11px] font-bold text-zinc-700">Event Type</Label>
+                        <select 
+                          className="w-full h-9 text-xs rounded-xl border border-zinc-200 bg-white px-3 outline-none focus:ring-1 focus:ring-primary"
+                          value={data.eventType}
+                          onChange={(e) => updateData('eventType', e.target.value)}
+                        >
+                          <option value="wedding">Wedding</option>
+                          <option value="birthday">Birthday</option>
+                          <option value="seminar">Seminar/Workshop</option>
+                          <option value="party">Party</option>
+                          <option value="corporate">Corporate Event</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
                       <Field label="Hashtag" value={data.hashtag} onChange={(v: string) => updateData('hashtag', v)} />
+                      <Field label="Main Title" value={data.title} onChange={(v: string) => updateData('title', v)} />
+                      <Field label="Sub Title" value={data.subTitle} onChange={(v: string) => updateData('subTitle', v)} />
                       <Field label="Opening Greeting" value={data.greeting} onChange={(v: string) => updateData('greeting', v)} />
                     </SectionCard>
                   </div>
                 )}
 
-                {editorTab === "couple" && (
-                  <div className="space-y-8">
-                    <SectionTitle title="Mempelai" subtitle="Profile data for the bride and groom." />
-                    <SectionCard title="Groom">
-                       <Field label="Nick Name" value={data.couple.groom.name} onChange={(v: string) => updateData('couple.groom.name', v)} />
-                       <ImageUpload value={data.couple.groom.photo} onUpload={url => updateData('couple.groom.photo', url)} />
-                    </SectionCard>
-                    <SectionCard title="Bride">
-                       <Field label="Nick Name" value={data.couple.bride.name} onChange={(v: string) => updateData('couple.bride.name', v)} />
-                       <ImageUpload value={data.couple.bride.photo} onUpload={url => updateData('couple.bride.photo', url)} />
-                    </SectionCard>
+                {editorTab === "organizers" && (
+                  <div className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
+                    <div className="flex justify-between items-center">
+                      <SectionTitle title="Organizers / Hosts" subtitle="Manage the people hosting the event." />
+                      <Button size="sm" variant="outline" className="h-8 text-[10px] font-bold rounded-xl" onClick={() => addItem('organizers', { name: "New Person", fullName: "", role: "Host" })}>
+                        <Plus size={12} className="mr-1" /> ADD HOST
+                      </Button>
+                    </div>
+
+                    <div className="space-y-6">
+                      {(data.organizers || []).map((person, idx) => (
+                        <SectionCard key={idx} title={person.name || `Host ${idx + 1}`}>
+                          <div className="flex flex-col gap-4">
+                            <Field label="Display Name" value={person.name} onChange={(v: string) => updateListItem('organizers', idx, { ...person, name: v })} />
+                            <Field label="Full Name" value={person.fullName} onChange={(v: string) => updateListItem('organizers', idx, { ...person, fullName: v })} />
+                            <Field label="Role" sublabel="e.g. Groom, Birthday Girl" value={person.role} onChange={(v: string) => updateListItem('organizers', idx, { ...person, role: v })} />
+                            <Field label="Sub Text" sublabel="e.g. Parents info" value={person.subText} onChange={(v: string) => updateListItem('organizers', idx, { ...person, subText: v })} />
+                            <ImageUpload value={person.photo} onUpload={url => updateListItem('organizers', idx, { ...person, photo: url })} />
+                            <Button variant="ghost" size="sm" className="self-end text-red-500 h-8 text-[10px] font-bold" onClick={() => removeItem('organizers', idx)}>
+                              <Trash2 size={12} className="mr-1" /> REMOVE
+                            </Button>
+                          </div>
+                        </SectionCard>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 {editorTab === "events" && (
                   <div className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
                     <div className="flex justify-between items-center">
-                      <SectionTitle title="Wedding Events" subtitle="Manage your akad, reception, and other events." />
+                      <SectionTitle title="Event Schedule" subtitle="Manage dates and locations." />
                       <Button size="sm" variant="outline" className="h-8 text-[10px] font-bold rounded-xl" onClick={() => addItem('events', {
                         name: "New Event",
                         date: "Saturday, 14 June 2026",
@@ -313,10 +343,10 @@ function EditorContent() {
 
                 {editorTab === "gallery" && (
                   <div className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
-                    <SectionTitle title="Photo Gallery" subtitle="Upload your pre-wedding or favorite photos." />
+                    <SectionTitle title="Photo Gallery" subtitle="Upload your event photos." />
                     
                     <div className="grid grid-cols-2 gap-4">
-                      {data.gallery.map((img, idx) => (
+                      {(data.gallery || []).map((img, idx) => (
                         <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border-2 border-zinc-100 group">
                           <img src={img} alt="" className="w-full h-full object-cover" />
                           <button 
@@ -334,99 +364,6 @@ function EditorContent() {
                   </div>
                 )}
 
-                {editorTab === "story" && (
-                  <div className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
-                    <div className="flex justify-between items-center">
-                      <SectionTitle title="Love Story" subtitle="Tell the journey of how you both met." />
-                      <Button size="sm" variant="outline" className="h-8 text-[10px] font-bold rounded-xl" onClick={() => addItem('story', { year: "2024", title: "New Milestone", desc: "Short description of the event..." })}>
-                        <Plus size={12} className="mr-1" /> ADD MOMENT
-                      </Button>
-                    </div>
-
-                    <div className="space-y-6">
-                      {data.story.map((item, idx) => (
-                        <SectionCard key={idx} title={`Moment ${idx + 1}`}>
-                          <div className="flex flex-col gap-4">
-                            <div className="grid grid-cols-3 gap-4">
-                              <div className="col-span-1">
-                                <Field label="Year" value={item.year} onChange={(v: string) => updateListItem('story', idx, { ...item, year: v })} />
-                              </div>
-                              <div className="col-span-2">
-                                <Field label="Milestone Title" value={item.title} onChange={(v: string) => updateListItem('story', idx, { ...item, title: v })} />
-                              </div>
-                            </div>
-                            <Field label="Description">
-                              <textarea 
-                                className="w-full min-h-[80px] text-xs p-3 rounded-xl border border-zinc-200 focus:ring-1 focus:ring-primary outline-none"
-                                value={item.desc}
-                                onChange={(e) => updateListItem('story', idx, { ...item, desc: e.target.value })}
-                              />
-                            </Field>
-                            <Button variant="ghost" size="sm" className="self-end text-red-500 hover:text-red-600 hover:bg-red-50 h-8 text-[10px] font-bold" onClick={() => removeItem('story', idx)}>
-                              <Trash2 size={12} className="mr-1" /> DELETE
-                            </Button>
-                          </div>
-                        </SectionCard>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {editorTab === "gift" && (
-                  <div className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
-                    <SectionTitle title="Wedding Gift" subtitle="Manage digital envelopes and shipping address." />
-                    
-                    <SectionCard title="Bank Accounts">
-                      <div className="space-y-6">
-                        {data.gift.banks.map((bank, idx) => (
-                          <div key={idx} className="p-4 bg-muted/20 rounded-2xl border border-zinc-100 space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <Field label="Bank Name" value={bank.bank} onChange={(v: string) => {
-                                const newBanks = [...data.gift.banks];
-                                newBanks[idx] = { ...newBanks[idx], bank: v };
-                                updateData('gift.banks', newBanks);
-                              }} />
-                              <Field label="Account Name" value={bank.accountName} onChange={(v: string) => {
-                                const newBanks = [...data.gift.banks];
-                                newBanks[idx] = { ...newBanks[idx], accountName: v };
-                                updateData('gift.banks', newBanks);
-                              }} />
-                            </div>
-                            <Field label="Account Number" value={bank.accountNumber} onChange={(v: string) => {
-                              const newBanks = [...data.gift.banks];
-                              newBanks[idx] = { ...newBanks[idx], accountNumber: v };
-                              updateData('gift.banks', newBanks);
-                            }} />
-                            <Button variant="ghost" size="sm" className="w-full text-red-500 text-[10px] font-bold h-8" onClick={() => {
-                              const newBanks = data.gift.banks.filter((_, i) => i !== idx);
-                              updateData('gift.banks', newBanks);
-                            }}>
-                              <Trash2 size={12} className="mr-1" /> REMOVE ACCOUNT
-                            </Button>
-                          </div>
-                        ))}
-                        <Button variant="outline" className="w-full border-dashed border-2 rounded-2xl h-12 text-[10px] font-bold" onClick={() => {
-                          const newBanks = [...data.gift.banks, { bank: "BCA", accountName: "", accountNumber: "" }];
-                          updateData('gift.banks', newBanks);
-                        }}>
-                          <Plus size={14} className="mr-1" /> ADD ANOTHER BANK
-                        </Button>
-                      </div>
-                    </SectionCard>
-
-                    <SectionCard title="Shipping Address">
-                       <Field label="Full Address for Gifts">
-                          <textarea 
-                            className="w-full min-h-[100px] text-xs p-3 rounded-xl border border-zinc-200 focus:ring-1 focus:ring-primary outline-none"
-                            value={data.gift.address}
-                            onChange={(e) => updateData('gift.address', e.target.value)}
-                            placeholder="Enter the address where guests can send physical gifts..."
-                          />
-                       </Field>
-                    </SectionCard>
-                  </div>
-                )}
-
                 {editorTab === "theme" && (
                   <div className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
                     <SectionTitle title="Visual Theme" subtitle="Personalize colors and typography live." />
@@ -434,73 +371,10 @@ function EditorContent() {
                       <div className="grid grid-cols-1 gap-6">
                         <ColorField label="Primary" sub="Main dominant color" value={data.theme.primaryColor} onChange={(v: string) => updateData('theme.primaryColor', v)} />
                         <ColorField label="Secondary" sub="Accent color" value={data.theme.secondaryColor} onChange={(v: string) => updateData('theme.secondaryColor', v)} />
-                        <ColorField label="Tertiary" sub="Detail color" value={data.theme.tertiaryColor} onChange={(v: string) => updateData('theme.tertiaryColor', v)} />
                         <div className="h-px bg-border my-2" />
                         <ColorField label="Background" sub="Page surface" value={data.theme.backgroundColor} onChange={(v: string) => updateData('theme.backgroundColor', v)} />
                         <ColorField label="Text Color" sub="Body and titles" value={data.theme.textColor} onChange={(v: string) => updateData('theme.textColor', v)} />
                       </div>
-                    </SectionCard>
-
-                    <SectionCard title="Typography">
-                       <div className="space-y-6">
-                          <div className="space-y-4">
-                             <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Heading Font</p>
-                             <div className="grid grid-cols-1 gap-4">
-                                <Field label="Font Family" sublabel="e.g. 'Cormorant Garamond', serif" value={data.theme.fontHeading.family} onChange={(v: string) => updateData('theme.fontHeading.family', v)} />
-                                <div className="grid grid-cols-2 gap-4">
-                                   <Field label="Base Size" value={data.theme.fontHeading.size} onChange={(v: string) => updateData('theme.fontHeading.size', v)} />
-                                   <Field label="Weight" value={data.theme.fontHeading.weight} onChange={(v: string) => updateData('theme.fontHeading.weight', v)} />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                   <Field label="Line Height" value={data.theme.fontHeading.lineHeight} onChange={(v: string) => updateData('theme.fontHeading.lineHeight', v)} />
-                                   <Field label="Letter Spacing" value={data.theme.fontHeading.letterSpacing} onChange={(v: string) => updateData('theme.fontHeading.letterSpacing', v)} />
-                                </div>
-                                <div className="space-y-1.5">
-                                  <Label className="text-[11px] font-bold text-zinc-700">Text Transform</Label>
-                                  <select 
-                                    className="w-full h-9 text-xs rounded-xl border border-zinc-200 bg-white px-3 outline-none focus:ring-1 focus:ring-primary"
-                                    value={data.theme.fontHeading.transform}
-                                    onChange={(e) => updateData('theme.fontHeading.transform', e.target.value)}
-                                  >
-                                    <option value="none">None</option>
-                                    <option value="uppercase">UPPERCASE</option>
-                                    <option value="lowercase">lowercase</option>
-                                    <option value="capitalize">Capitalize</option>
-                                  </select>
-                                </div>
-                             </div>
-                          </div>
-                          
-                          <div className="h-px bg-border" />
-
-                          <div className="space-y-4">
-                             <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Body Font</p>
-                             <div className="grid grid-cols-1 gap-4">
-                                <Field label="Font Family" sublabel="e.g. 'DM Sans', sans-serif" value={data.theme.fontBody.family} onChange={(v: string) => updateData('theme.fontBody.family', v)} />
-                                <div className="grid grid-cols-2 gap-4">
-                                   <Field label="Base Size" value={data.theme.fontBody.size} onChange={(v: string) => updateData('theme.fontBody.size', v)} />
-                                   <Field label="Weight" value={data.theme.fontBody.weight} onChange={(v: string) => updateData('theme.fontBody.weight', v)} />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                   <Field label="Line Height" value={data.theme.fontBody.lineHeight} onChange={(v: string) => updateData('theme.fontBody.lineHeight', v)} />
-                                   <Field label="Letter Spacing" value={data.theme.fontBody.letterSpacing} onChange={(v: string) => updateData('theme.fontBody.letterSpacing', v)} />
-                                </div>
-                                <div className="space-y-1.5">
-                                  <Label className="text-[11px] font-bold text-zinc-700">Text Transform</Label>
-                                  <select 
-                                    className="w-full h-9 text-xs rounded-xl border border-zinc-200 bg-white px-3 outline-none focus:ring-1 focus:ring-primary"
-                                    value={data.theme.fontBody.transform}
-                                    onChange={(e) => updateData('theme.fontBody.transform', e.target.value)}
-                                  >
-                                    <option value="none">None</option>
-                                    <option value="uppercase">UPPERCASE</option>
-                                    <option value="lowercase">lowercase</option>
-                                    <option value="capitalize">Capitalize</option>
-                                  </select>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
                     </SectionCard>
                   </div>
                 )}
@@ -509,7 +383,7 @@ function EditorContent() {
           </aside>
 
           {/* REAL-TIME PREVIEW HUB */}
-          <main className="flex-1 bg-[#1a1a1a] relative flex flex-col overflow-hidden" ref={containerRef}>
+          <main className={`${activeTab === "preview" ? "flex" : "hidden"} sm:flex flex-1 bg-[#1a1a1a] relative flex-col overflow-hidden`} ref={containerRef}>
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
             
             <div className="h-16 flex items-center justify-center border-b border-white/10 bg-white/5 backdrop-blur-xl z-50">
@@ -517,17 +391,6 @@ function EditorContent() {
                   <DeviceBtn active={device === "desktop"} onClick={() => {setDevice("desktop"); setOrientation("landscape")}} icon={<Monitor size={14}/>} label="Desktop" />
                   <DeviceBtn active={device === "tablet"} onClick={() => setDevice("tablet")} icon={<Tablet size={14}/>} label="Tablet" />
                   <DeviceBtn active={device === "mobile"} onClick={() => setDevice("mobile")} icon={<Smartphone size={14}/>} label="Mobile" />
-                  <div className="w-px bg-white/10 mx-1" />
-                  <button 
-                    onClick={() => setOrientation(o => o === "portrait" ? "landscape" : "portrait")} 
-                    disabled={device === "desktop"}
-                    className={cn(
-                      "p-2 rounded-xl transition-all",
-                      device === "desktop" ? "opacity-20 cursor-not-allowed" : "text-white/40 hover:text-white hover:bg-white/5"
-                    )}
-                  >
-                    <RotateCcw size={14} className={cn("transition-transform duration-500", orientation === "landscape" ? "rotate-90" : "")} />
-                  </button>
                </div>
             </div>
 
@@ -538,7 +401,7 @@ function EditorContent() {
                    style={{ width: `${deviceWidth}px`, height: `${deviceHeight}px`, borderRadius: device === "desktop" ? "0" : "3.5rem" }}
                  >
                    <div className="w-full h-full bg-white overflow-y-auto scrollbar-hide">
-                     <WeddingInviteClient 
+                     <EventInvitationClient 
                        id="preview" 
                        initialData={data} 
                        forceOpen={true} 
@@ -546,9 +409,6 @@ function EditorContent() {
                        orientation={orientation}
                      />
                    </div>
-                 </div>
-                 <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] whitespace-nowrap">
-                    {device.toUpperCase()} View — {Math.round(scale * 100)}% ZOOM
                  </div>
                </motion.div>
             </div>
@@ -596,15 +456,7 @@ function SectionCard({ title, children }: { title: string, children: React.React
   );
 }
 
-interface FieldProps {
-  label: string;
-  sublabel?: string;
-  children?: React.ReactNode;
-  value?: string;
-  onChange?: (v: string) => void;
-}
-
-function Field({ label, sublabel, children, value, onChange }: FieldProps) {
+function Field({ label, sublabel, children, value, onChange }: any) {
   return (
     <div className="space-y-1.5 w-full">
       <div className="flex justify-between items-end px-0.5">
@@ -616,7 +468,7 @@ function Field({ label, sublabel, children, value, onChange }: FieldProps) {
   );
 }
 
-function ColorField({ label, sub, value, onChange }: { label: string, sub: string, value: string, onChange: (v: string) => void }) {
+function ColorField({ label, sub, value, onChange }: any) {
   return (
     <div className="flex items-center justify-between group">
       <div>
@@ -631,7 +483,7 @@ function ColorField({ label, sub, value, onChange }: { label: string, sub: strin
   );
 }
 
-function DeviceBtn({ active, onClick, icon, label }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string }) {
+function DeviceBtn({ active, onClick, icon, label }: any) {
   return (
     <button onClick={onClick} className={`px-4 py-1.5 rounded-xl flex items-center gap-2 transition-all ${active ? 'bg-white text-black shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}>
       {icon}

@@ -1,6 +1,8 @@
-import { WeddingData } from "@/lib/types";
+import { EventInvitationData } from "@/lib/types";
 
-export default function DresscodeSection({ data }: { data: WeddingData }) {
+export default function DresscodeSection({ data }: { data: EventInvitationData }) {
+  if (!data.dresscode) return null;
+
   return (
     <section className="inv-section" style={{ textAlign: "center" }}>
       <p className="inv-section-label">Dress Code</p>
@@ -9,7 +11,7 @@ export default function DresscodeSection({ data }: { data: WeddingData }) {
       <p className="inv-dresscode-theme">{data.dresscode.theme}</p>
 
       <div className="inv-dresscode-palette">
-        {data.dresscode.palette.map((color) => (
+        {data.dresscode.palette?.map((color) => (
           <div
             key={color}
             className="inv-dresscode-swatch"

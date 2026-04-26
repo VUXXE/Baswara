@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { WeddingData } from "@/lib/types";
+import { EventInvitationData } from "@/lib/types";
 
-export default function GallerySection({ data }: { data: WeddingData }) {
+export default function GallerySection({ data }: { data: EventInvitationData }) {
   return (
     <section className="inv-section">
       <p className="inv-section-label">Galeri</p>

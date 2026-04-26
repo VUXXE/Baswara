@@ -1,24 +1,20 @@
-import { WeddingData } from "@/lib/types";
+import { EventInvitationData } from "@/lib/types";
 
-export default function HeroSection({ data }: { data: WeddingData }) {
+export default function HeroSection({ data }: { data: EventInvitationData }) {
   return (
     <section className="inv-hero">
       <div className="inv-hero-divider" />
-      <p className="inv-hero-pre">Bismillahirrahmanirrahim</p>
+      <p className="inv-hero-pre">{data.subTitle || "You are invited to"}</p>
       <h1 className="inv-hero-names">
-        {data.couple.groom.name}
-        <span className="inv-hero-amp">&amp;</span>
-        {data.couple.bride.name}
+        {data.title}
       </h1>
       <p className="inv-hero-date">
-        {data.events[0]?.date?.toUpperCase() || data.weddingDate?.split('T')[0]}
+        {data.events?.[0]?.date || "Save the Date"}
       </p>
       <p className="inv-hero-msg">
-        &ldquo;Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu
-        isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya.&rdquo;
-        <br />
-        <span style={{ fontSize: '0.82rem', opacity: 0.7 }}>— QS. Ar-Rum: 21</span>
+        {data.description || "Kami mengundang Anda untuk hadir dalam acara spesial kami."}
       </p>
     </section>
   );
 }
+

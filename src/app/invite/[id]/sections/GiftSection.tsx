@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
-import { WeddingData } from "@/lib/types";
+import { EventInvitationData } from "@/lib/types";
 
-export default function GiftSection({ data }: { data: WeddingData }) {
+export default function GiftSection({ data }: { data: EventInvitationData }) {
   const [copied, setCopied] = useState<string | null>(null);
+
+  if (!data.gift) return null;
 
   function copy(text: string, key: string) {
     navigator.clipboard.writeText(text);
@@ -13,13 +15,13 @@ export default function GiftSection({ data }: { data: WeddingData }) {
 
   return (
     <section className="inv-section">
-      <p className="inv-section-label">Wedding Gift</p>
+      <p className="inv-section-label">{data.eventType === 'wedding' ? 'Wedding Gift' : 'Gift Registry'}</p>
       <h2 className="inv-section-title">Amplop <em>Digital</em></h2>
       <p className="inv-section-sub">Doa restu Anda merupakan karunia terbesar bagi kami. Namun jika ingin memberikan tanda kasih, silakan melalui:</p>
 
       <div className="inv-gift-cards">
-        {data.gift.banks.map((b) => (
-          <div className="inv-gift-card" key={b.bank}>
+        {data.gift.banks?.map((b) => (
+          <div className="inv-gift-card" key={b.bank + b.accountNumber}>
             <div>
               <p className="inv-gift-bank">{b.bank}</p>
               <p className="inv-gift-name">{b.accountName}</p>
@@ -35,18 +37,20 @@ export default function GiftSection({ data }: { data: WeddingData }) {
         ))}
       </div>
 
-      <div className="inv-gift-address">
-        <div>
-          <p className="inv-gift-addr-label">Alamat Pengiriman</p>
-          <p className="inv-gift-addr-text">{data.gift.address}</p>
+      {data.gift.address && (
+        <div className="inv-gift-address">
+          <div>
+            <p className="inv-gift-addr-label">Alamat Pengiriman</p>
+            <p className="inv-gift-addr-text">{data.gift.address}</p>
+          </div>
+          <button
+            className={`inv-copy-btn${copied === "addr" ? " copied" : ""}`}
+            onClick={() => copy(data.gift.address, "addr")}
+          >
+            {copied === "addr" ? "✓ Tersalin" : "Salin"}
+          </button>
         </div>
-        <button
-          className={`inv-copy-btn${copied === "addr" ? " copied" : ""}`}
-          onClick={() => copy(data.gift.address, "addr")}
-        >
-          {copied === "addr" ? "✓ Tersalin" : "Salin"}
-        </button>
-      </div>
+      )}
     </section>
   );
 }

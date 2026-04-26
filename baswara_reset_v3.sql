@@ -1,8 +1,10 @@
 -- =============================================
--- BASWARA DATABASE SCHEMA V2 (Robust - Multi-Event)
+-- BASWARA DATABASE RESET & SCHEMA (Multi-Event V3)
 -- =============================================
 
 -- 1. CLEANUP (Nuke everything)
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS public.handle_new_user();
 DROP TABLE IF EXISTS "public"."rsvps" CASCADE;
 DROP TABLE IF EXISTS "public"."invitations" CASCADE;
 DROP TABLE IF EXISTS "public"."profiles" CASCADE;
@@ -10,7 +12,9 @@ DROP TABLE IF EXISTS "public"."profiles" CASCADE;
 -- 2. EXTENSIONS
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- 3. PROFILES
+-- 3. TABLES
+
+-- PROFILES: User identity and preferences
 CREATE TABLE "public"."profiles" (
   "id" uuid NOT NULL REFERENCES auth.users ON DELETE CASCADE,
   "full_name" text,
@@ -19,8 +23,8 @@ CREATE TABLE "public"."profiles" (
   "updated_at" timestamptz DEFAULT now(),
   PRIMARY KEY ("id")
 );
-
--- 4. INVITATIONS
+  
+-- INVITATIONS: Supports Weddings, Birthdays, Seminars, etc.
 CREATE TABLE "public"."invitations" (
   "id" uuid NOT NULL DEFAULT gen_random_uuid(),
   "user_id" uuid NOT NULL REFERENCES auth.users ON DELETE CASCADE,
@@ -36,7 +40,7 @@ CREATE TABLE "public"."invitations" (
   UNIQUE ("slug")
 );
 
--- 5. RSVPS
+-- RSVPS: Guest responses for any invitation type
 CREATE TABLE "public"."rsvps" (
   "id" uuid NOT NULL DEFAULT gen_random_uuid(),
   "invitation_id" uuid NOT NULL REFERENCES public.invitations(id) ON DELETE CASCADE,
@@ -52,14 +56,37 @@ CREATE TABLE "public"."rsvps" (
   CONSTRAINT "rsvps_status_check" CHECK (status IN ('hadir', 'berhalangan', 'pending'))
 );
 
--- 6. SECURITY (RLS)
+-- 4. SECURITY (Row Level Security)
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."invitations" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."rsvps" ENABLE ROW LEVEL SECURITY;
 
--- 7. POLICIES
-CREATE POLICY "manage_own_profile" ON "public"."profiles" FOR ALL USING (auth.uid() = id);
-CREATE POLICY "manage_own_invitations" ON "public"."invitations" FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "public_view_invitations" ON "public"."invitations" FOR SELECT USING (true);
-CREATE POLICY "view_invitation_rsvps" ON "public"."rsvps" FOR SELECT USING (EXISTS (SELECT 1 FROM invitations WHERE id = rsvps.invitation_id AND user_id = auth.uid()));
-CREATE POLICY "public_submit_rsvps" ON "public"."rsvps" FOR INSERT WITH CHECK (true);
+-- POLICIES: Profiles (Users manage their own)
+CREATE POLICY "manage_own_profile" ON "public"."profiles" 
+FOR ALL USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+
+-- POLICIES: Invitations (Owners manage, public view by slug)
+CREATE POLICY "manage_own_invitations" ON "public"."invitations" 
+FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "public_view_invitations" ON "public"."invitations" 
+FOR SELECT USING (true);
+
+-- POLICIES: RSVPs (Owners view, public submit)
+CREATE POLICY "view_invitation_rsvps" ON "public"."rsvps" 
+FOR SELECT USING (EXISTS (SELECT 1 FROM invitations WHERE id = rsvps.invitation_id AND user_id = auth.uid()));
+CREATE POLICY "public_submit_rsvps" ON "public"."rsvps" 
+FOR INSERT WITH CHECK (true);
+
+-- 5. AUTOMATION (Signup Trigger)
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, full_name)
+  VALUES (new.id, new.raw_user_meta_data->>'full_name');
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();

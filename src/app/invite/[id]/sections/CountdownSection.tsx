@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { WeddingData } from "@/lib/types";
+import { EventInvitationData } from "@/lib/types";
 
 function getTimeLeft(target: string) {
   const diff = new Date(target).getTime() - Date.now();
@@ -13,16 +13,19 @@ function getTimeLeft(target: string) {
   };
 }
 
-export default function CountdownSection({ data }: { data: WeddingData }) {
+export default function CountdownSection({ data }: { data: any }) {
   const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [mounted, setMounted] = useState(false);
 
+  const eventData = data as EventInvitationData;
+  const targetDate = eventData.mainDate || "2026-06-14T08:00:00";
+
   useEffect(() => {
     setMounted(true);
-    setTime(getTimeLeft(data.weddingDate));
-    const t = setInterval(() => setTime(getTimeLeft(data.weddingDate)), 1000);
+    setTime(getTimeLeft(targetDate));
+    const t = setInterval(() => setTime(getTimeLeft(targetDate)), 1000);
     return () => clearInterval(t);
-  }, [data.weddingDate]);
+  }, [targetDate]);
 
   const units = [
     { num: time.days, label: "Hari" },
@@ -31,13 +34,13 @@ export default function CountdownSection({ data }: { data: WeddingData }) {
     { num: time.seconds, label: "Detik" },
   ];
 
-  const formattedDate = (data.weddingDate || "2026-06-14T08:00:00").replace(/[-:]/g, "").split(".")[0];
-  const calUrl = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(`Pernikahan ${data.couple.groom.name} & ${data.couple.bride.name}`)}&dates=${formattedDate}/${formattedDate}&details=${encodeURIComponent(data.hashtag)}`;
+  const formattedDate = targetDate.replace(/[-:]/g, "").split(".")[0];
+  const calUrl = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(eventData.title)}&dates=${formattedDate}/${formattedDate}&details=${encodeURIComponent(eventData.hashtag || "")}`;
 
   return (
     <section className="inv-section" style={{ textAlign: "center" }}>
       <p className="inv-section-label">Hitung Mundur</p>
-      <h2 className="inv-section-title">Menuju Hari <em>Bahagia</em></h2>
+      <h2 className="inv-section-title">Menuju Hari <em>{eventData.eventType === 'wedding' ? 'Bahagia' : 'Istimewa'}</em></h2>
 
       <div className="inv-countdown-grid">
         {units.map(({ num, label }) => (

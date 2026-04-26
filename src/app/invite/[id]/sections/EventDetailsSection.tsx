@@ -1,6 +1,6 @@
-import { WeddingData } from "@/lib/types";
+import { EventInvitationData } from "@/lib/types";
 
-export default function EventDetailsSection({ data }: { data: WeddingData }) {
+export default function EventDetailsSection({ data }: { data: EventInvitationData }) {
   return (
     <section className="inv-section">
       <p className="inv-section-label">Rangkaian Acara</p>
@@ -8,7 +8,7 @@ export default function EventDetailsSection({ data }: { data: WeddingData }) {
       <p className="inv-section-sub">Kehadiran Anda adalah kebahagiaan terbesar kami</p>
 
       <div className="inv-event-cards">
-        {data.events.map((ev) => (
+        {data.events?.map((ev) => (
           <div className="inv-event-card" key={ev.name}>
             <span className="inv-event-badge">{ev.name}</span>
             <p className="inv-event-date">{ev.date}</p>

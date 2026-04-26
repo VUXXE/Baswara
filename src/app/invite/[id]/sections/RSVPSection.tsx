@@ -1,29 +1,32 @@
 "use client";
 import { useState, useEffect } from "react";
-import { WeddingData } from "@/lib/types";
+import { EventInvitationData } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
-export default function RSVPSection({ data, weddingId }: { data: WeddingData, weddingId?: string }) {
+export default function RSVPSection({ data, invitationId }: { data: any, invitationId?: string }) {
   const [wishes, setWishes] = useState<any[]>([]);
   const [form, setForm] = useState({ name: "", phone: "", attend: "hadir", msg: "" });
   const [submitted, setSubmitted] = useState(false);
   const [lastGuestToken, setLastGuestToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const eventType = (data as EventInvitationData).eventType || 'event';
+  const isWedding = eventType === 'wedding';
+
   useEffect(() => {
-    if (weddingId) {
+    if (invitationId) {
       fetchRSVPs();
     }
-  }, [weddingId]);
+  }, [invitationId]);
 
   async function fetchRSVPs() {
     const { data: rsvps, error } = await supabase
       .from('rsvps')
       .select('*')
-      .eq('wedding_id', weddingId)
+      .eq('invitation_id', invitationId)
       .order('created_at', { ascending: false });
     
     if (!error && rsvps) {
@@ -33,7 +36,7 @@ export default function RSVPSection({ data, weddingId }: { data: WeddingData, we
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name || !form.msg || !weddingId) return;
+    if (!form.name || !form.msg || !invitationId) return;
     
     setLoading(true);
     const qrToken = Math.random().toString(36).substring(2, 15);
@@ -41,7 +44,7 @@ export default function RSVPSection({ data, weddingId }: { data: WeddingData, we
     const { error } = await supabase
       .from('rsvps')
       .insert({
-        wedding_id: weddingId,
+        invitation_id: invitationId,
         name: form.name,
         phone_number: form.phone,
         status: form.attend,
@@ -63,7 +66,7 @@ export default function RSVPSection({ data, weddingId }: { data: WeddingData, we
   return (
     <section className="inv-section">
       <p className="inv-section-label">RSVP &amp; Ucapan</p>
-      <h2 className="inv-section-title">Konfirmasi &amp; <em>Doa</em></h2>
+      <h2 className="inv-section-title">Konfirmasi &amp; <em>Pesan</em></h2>
       
       {submitted && lastGuestToken && (
         <motion.div 
@@ -93,7 +96,7 @@ export default function RSVPSection({ data, weddingId }: { data: WeddingData, we
 
       {!submitted && (
         <>
-          <p className="inv-section-sub">Kirimkan konfirmasi kehadiran dan ucapan terbaik untuk kami</p>
+          <p className="inv-section-sub">Kirimkan konfirmasi kehadiran dan pesan terbaik Anda untuk kami</p>
 
           <form className="inv-rsvp-form" onSubmit={handleSubmit}>
             <div className="inv-form-group">
@@ -119,12 +122,12 @@ export default function RSVPSection({ data, weddingId }: { data: WeddingData, we
             </div>
 
             <div className="inv-form-group">
-              <label className="inv-form-label" htmlFor="rsvp-msg">Ucapan &amp; Doa *</label>
-              <textarea id="rsvp-msg" className="inv-form-textarea" placeholder="Tuliskan ucapan selamat dan doa untuk mempelai..." value={form.msg} onChange={e => setForm(f => ({ ...f, msg: e.target.value }))} required />
+              <label className="inv-form-label" htmlFor="rsvp-msg">Pesan &amp; Ucapan *</label>
+              <textarea id="rsvp-msg" className="inv-form-textarea" placeholder={isWedding ? "Tuliskan ucapan selamat dan doa untuk mempelai..." : "Tuliskan pesan atau ucapan Anda..."} value={form.msg} onChange={e => setForm(f => ({ ...f, msg: e.target.value }))} required />
             </div>
 
             <button type="submit" className="inv-submit-btn" disabled={loading}>
-              {loading ? "Mengirim..." : "Kirim Ucapan ✦"}
+              {loading ? "Mengirim..." : "Kirim Pesan ✦"}
             </button>
           </form>
         </>
@@ -133,7 +136,7 @@ export default function RSVPSection({ data, weddingId }: { data: WeddingData, we
       {/* Wishes list */}
       <div style={{ marginTop: 40 }}>
         <p style={{ fontSize: "0.78rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--inv-primary)", marginBottom: 12, fontWeight: 600 }}>
-          {wishes.length} Ucapan
+          {wishes.length} Ucapan / Pesan
         </p>
         <div className="inv-wishes-list">
           {wishes.map((w, i) => (
