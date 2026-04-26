@@ -20,7 +20,9 @@ export default function CTASection() {
         <div className="flex flex-col items-center gap-8">
           <div className="w-full max-w-md flex flex-col sm:flex-row gap-4">
             <input type="email" placeholder="Masukkan email Anda" className="flex-1 h-16 px-8 rounded-full bg-white text-[#6b1d1d] text-lg focus:outline-none font-bold placeholder:text-[#6b1d1d]/40" />
-            <Button className="h-16 px-10 text-base rounded-full bg-[#fecf00] text-[#6b1d1d] hover:bg-white transition-all font-black uppercase border-none shadow-xl">Gabung</Button>
+            <Link href="/onboarding">
+              <Button className="h-16 px-10 text-base rounded-full bg-[#fecf00] text-[#6b1d1d] hover:bg-white transition-all font-black uppercase border-none shadow-xl">Gabung</Button>
+            </Link>
           </div>
           <p className="text-[10px] text-white/60 font-black uppercase tracking-[0.4em] flex items-center gap-3"><CheckCircle2 size={16} className="text-[#fecf00]" /> Gratis untuk acara pertama Anda</p>
         </div>

@@ -22,6 +22,7 @@ interface PreferenceStepProps {
 const themes = [
   { id: 'classic', label: 'Klasik & Elegan', color: 'bg-[#6b1d1d]', preview: 'Serif, warna pastel, dekorasi floral.' },
   { id: 'modern', label: 'Modern Minimalis', color: 'bg-[#fd5e4b]', preview: 'Sans-serif, clean lines, bold colors.' },
+  { id: 'floral', label: 'Elegant Floral', color: 'bg-[#8fad9e]', preview: 'Decorative elements, soft and romantic.' },
   { id: 'playful', label: 'Ceria & Warna-warni', color: 'bg-yellow-400', preview: 'Ilustrasi, font unik, penuh energi.' },
   { id: 'vintage', label: 'Vintage Retro', color: 'bg-amber-800', preview: 'Tekstur kertas, font klasik, warna hangat.' },
 ];

@@ -16,6 +16,7 @@ const themes = [
   { id: 'classic', label: 'Classic Elegance', desc: 'Serif fonts and pastel tones.', preview: 'bg-[#faf7f2] border-[#c17a6f]' },
   { id: 'modern', label: 'Modern Minimal', desc: 'Clean lines and bold contrast.', preview: 'bg-white border-zinc-900' },
   { id: 'floral', label: 'Botanical Bloom', desc: 'Nature-inspired decorations.', preview: 'bg-[#f0f4ef] border-[#8fad9e]' },
+  { id: 'playful', label: 'Playful Party', desc: 'Bright colors and fun typography.', preview: 'bg-white border-[#fd5e4b]' },
   { id: 'vintage', label: 'Warm Vintage', desc: 'Retro vibes and warm textures.', preview: 'bg-[#faf3e0] border-[#b89a6a]' },
 ];
 

@@ -33,7 +33,7 @@ export default function HeroSection() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6 pt-4">
-                <Link href="/dashboard" className={buttonVariants({ size: "lg", className: "h-16 px-10 text-lg rounded-full bg-[#fd5e4b] hover:bg-[#6b1d1d] transition-all duration-300 text-white border-none shadow-xl shadow-[#fd5e4b]/20 font-black uppercase tracking-widest" })}>
+                <Link href="/onboarding" className={buttonVariants({ size: "lg", className: "h-16 px-10 text-lg rounded-full bg-[#fd5e4b] hover:bg-[#6b1d1d] transition-all duration-300 text-white border-none shadow-xl shadow-[#fd5e4b]/20 font-black uppercase tracking-widest" })}>
                   Buat Acara
                 </Link>
                 <Link href="/invite/customize" className={buttonVariants({ size: "lg", variant: "outline", className: "h-16 px-10 text-lg rounded-full border-2 border-[#6b1d1d] text-[#6b1d1d] hover:bg-[#6b1d1d]/5 transition-all duration-300 font-bold" })}>

@@ -132,9 +132,26 @@ export default function EventInvitationClient({
   
   const data = useMemo(() => {
     if (!initialData) return DEFAULT_EVENT_DATA;
+    
+    // Deep merge core objects to ensure fallbacks work even for partially edited events
     return {
       ...DEFAULT_EVENT_DATA,
       ...initialData,
+      theme: {
+        ...DEFAULT_EVENT_DATA.theme,
+        ...initialData.theme,
+        fontHeading: { ...DEFAULT_EVENT_DATA.theme.fontHeading, ...initialData.theme?.fontHeading },
+        fontBody: { ...DEFAULT_EVENT_DATA.theme.fontBody, ...initialData.theme?.fontBody },
+      },
+      organizers: initialData.organizers || DEFAULT_EVENT_DATA.organizers,
+      events: initialData.events || DEFAULT_EVENT_DATA.events,
+      gallery: initialData.gallery || DEFAULT_EVENT_DATA.gallery,
+      story: initialData.story || DEFAULT_EVENT_DATA.story,
+      gift: {
+        ...DEFAULT_EVENT_DATA.gift,
+        ...initialData.gift,
+        banks: initialData.gift?.banks || DEFAULT_EVENT_DATA.gift?.banks,
+      },
     };
   }, [initialData]);
 

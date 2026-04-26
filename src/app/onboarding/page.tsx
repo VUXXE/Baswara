@@ -7,7 +7,8 @@ import { supabase } from "@/lib/supabase";
 import { Loader2, ArrowLeft, ArrowRight, Heart, Star, Sparkles, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_EVENT_DATA } from "../invite/[id]/EventInvitationClient";
-import { EventType } from "@/lib/types";
+import { EventType, EventInvitationData } from "@/lib/types";
+import { TEMPLATES } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 
 // New specialized components for the "Better" onboarding
@@ -48,22 +49,48 @@ export default function OnboardingPage() {
         full_name: formData.userName 
       }).eq('id', session.user.id);
 
-      // 2. Create Invitation
+      // 2. Prepare Data based on Template and Input
+      const chosenTemplate = TEMPLATES.find(t => t.id === formData.theme) || TEMPLATES[0];
       const slug = `${formData.title.toLowerCase().replace(/\s+/g, '-') || 'event'}-${Math.random().toString(36).substring(2, 7)}`;
       
-      const eventData = {
+      const eventData: EventInvitationData = {
         ...DEFAULT_EVENT_DATA,
+        ...chosenTemplate.defaultData,
+        id: slug,
         eventType: formData.eventType,
         title: formData.title,
         mainDate: formData.date || DEFAULT_EVENT_DATA.mainDate,
         templateId: formData.theme,
+        hashtag: `#${formData.title.replace(/\s+/g, '')}`,
+        // Customize greeting based on event type
+        greeting: formData.eventType === 'wedding' ? "Kepada Yth. Bapak/Ibu/Saudara/i" : 
+                  formData.eventType === 'birthday' ? "Halo Teman-teman & Keluarga!" : "Dear Valued Guests,",
+        subTitle: formData.eventType === 'wedding' ? "The Wedding of" : 
+                  formData.eventType === 'birthday' ? "Celebrating the Birthday of" : "Special Invitation",
+        // Reset organizers for non-wedding or update labels
+        organizers: formData.eventType === 'wedding' ? DEFAULT_EVENT_DATA.organizers : [
+          {
+            name: formData.userName.split(' ')[0],
+            fullName: formData.userName,
+            role: formData.eventType === 'birthday' ? "Birthday Star" : "Host",
+            subText: formData.eventType === 'birthday' ? "Turning a year older!" : "Welcome to our event"
+          }
+        ],
+        // Set first event date/time to match main date
+        events: [
+          {
+            ...DEFAULT_EVENT_DATA.events[0],
+            date: new Date(formData.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+            name: formData.eventType === 'wedding' ? "Resepsi" : "Main Event"
+          }
+        ]
       };
 
       const { error } = await supabase.from('invitations').insert({
         user_id: session.user.id,
         event_type: formData.eventType,
         slug: slug,
-        hashtag: `#${formData.title.replace(/\s+/g, '')}`,
+        hashtag: eventData.hashtag,
         preset_design: formData.theme,
         data: eventData,
       });

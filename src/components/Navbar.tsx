@@ -41,7 +41,7 @@ export default function Navbar() {
                 <span className="hidden xs:inline">Profile</span>
                 <User size={18} className="xs:hidden" />
               </Link>
-              <Link href="/invite/customize" className={buttonVariants({ className: "bg-[#fd5e4b] hover:bg-[#6b1d1d] text-white rounded-full px-4 sm:px-6 transition-all duration-300 font-bold uppercase tracking-widest text-[10px] sm:text-xs h-9 sm:h-10" })}>
+              <Link href="/onboarding" className={buttonVariants({ className: "bg-[#fd5e4b] hover:bg-[#6b1d1d] text-white rounded-full px-4 sm:px-6 transition-all duration-300 font-bold uppercase tracking-widest text-[10px] sm:text-xs h-9 sm:h-10" })}>
                 <Plus size={14} className="sm:mr-2" />
                 <span className="hidden sm:inline">Create Invite</span>
               </Link>
