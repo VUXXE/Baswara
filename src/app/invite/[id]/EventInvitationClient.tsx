@@ -12,35 +12,36 @@ import GiftSection from "./sections/GiftSection";
 import RSVPSection from "./sections/RSVPSection";
 import MusicPlayer from "./sections/MusicPlayer";
 import { EventInvitationData, EventType } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import "./invite.css";
 
 export const DEFAULT_EVENT_DATA: EventInvitationData = {
   id: "evt-001",
   eventType: "wedding",
   templateId: "classic",
-  hashtag: "#BaswaraWedding",
-  greeting: "Kepada Yth. Bapak/Ibu/Saudara/i",
-  guestName: "Tamu Undangan",
-  title: "Adrian & Ariana",
-  subTitle: "The Wedding of",
+  hashtag: "#BaswaraEvent",
+  greeting: "Kami mengundang Anda",
+  guestName: "Tamu Kehormatan",
+  title: "Nama Acara Anda",
+  subTitle: "Special Invitation",
   organizers: [
     {
-      name: "Adrian",
-      fullName: "Adrian Ramadhan Putra",
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-      instagram: "@adrianrmd",
-      role: "Groom",
-      subText: "Putra dari Bpk. Hendra & Ibu Sari"
-    },
-    {
-      name: "Ariana",
-      fullName: "Ariana Dewi Lestari",
-      photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
-      instagram: "@arianadewi",
-      role: "Bride",
-      subText: "Putri dari Bpk. Budi & Ibu Wati"
+      name: "Penyelenggara 1",
+      fullName: "Nama Lengkap Penyelenggara",
+      role: "Host",
+      subText: "Selamat datang di acara kami"
     }
   ],
+  layout: {
+    showOrganizers: true,
+    showCountdown: true,
+    showEvents: true,
+    showDresscode: true,
+    showGallery: true,
+    showStory: true,
+    showGift: true,
+    showRSVP: true,
+  },
   events: [
     {
       name: "Akad Nikah",
@@ -119,14 +120,18 @@ export default function EventInvitationClient({
   forceOpen = false,
   viewMode = "desktop",
   orientation = "portrait",
-  dbId
+  dbId,
+  onSectionSelect,
+  selectedSection
 }: { 
   id: string, 
   initialData?: EventInvitationData, 
   forceOpen?: boolean,
   viewMode?: "mobile" | "tablet" | "desktop",
   orientation?: "portrait" | "landscape",
-  dbId?: string
+  dbId?: string,
+  onSectionSelect?: (section: any) => void,
+  selectedSection?: string
 }) {
   const [opened, setOpened] = useState(forceOpen);
   
@@ -182,11 +187,20 @@ export default function EventInvitationClient({
   const currentTemplate = data.templateId || "classic";
 
   return (
-    <div className={`invite-root view-${viewMode} orient-${orientation} tpl-${currentTemplate} type-${data.eventType}`} style={themeStyles}>
+    <div 
+      className={`invite-root view-${viewMode} orient-${orientation} tpl-${currentTemplate} type-${data.eventType}`} 
+      style={{
+        ...themeStyles,
+        backgroundImage: data.backgroundImage ? `url(${data.backgroundImage})` : undefined,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <aside className="invite-left">
-        <div className="invite-left-bg" style={{ backgroundImage: `url(${data.gallery?.[0] || DEFAULT_EVENT_DATA.gallery?.[0]})` }} />
+        <div className="invite-left-bg" style={{ backgroundImage: `url(${data.sideImage || data.gallery?.[0] || DEFAULT_EVENT_DATA.gallery?.[0]})` }} />
         <div className="invite-left-overlay">
-          <div className="invite-left-content">
+          <div className="invite-left-content" onClick={() => onSectionSelect?.('general')} style={{ cursor: onSectionSelect ? 'pointer' : 'default' }}>
             <p className="invite-left-tag">{data.eventType.toUpperCase()} INVITATION</p>
             <h2 className="invite-left-names">
               {data.title}
@@ -201,7 +215,22 @@ export default function EventInvitationClient({
 
       <main className="invite-right" ref={rightPanelRef}>
         {!opened ? (
-          <div className="invite-envelope" onClick={() => setOpened(true)}>
+          <div 
+            className="invite-envelope" 
+            onClick={() => {
+              if (onSectionSelect) {
+                onSectionSelect('general');
+              } else {
+                setOpened(true);
+              }
+            }}
+            style={{
+              backgroundImage: data.envelopeImage ? `linear-gradient(rgba(250,247,242,0.6), rgba(250,247,242,0.6)), url(${data.envelopeImage})` : undefined,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              cursor: 'pointer'
+            }}
+          >
             <div className="envelope-icon">
               <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="12" width="60" height="40" rx="4" fill="#fff" stroke="var(--inv-primary)" strokeWidth="2"/>
@@ -215,16 +244,59 @@ export default function EventInvitationClient({
           </div>
         ) : (
           <div className="invite-content">
-            <HeroSection data={data as any} />
-            <OrganizersSection data={data as any} />
-            <CountdownSection data={data as any} />
-            <EventDetailsSection data={data as any} />
-            {data.dresscode && <DresscodeSection data={data as any} />}
-            {data.gallery && data.gallery.length > 0 && <GallerySection data={data as any} />}
-            {data.story && data.story.length > 0 && <StorySection data={data as any} />}
-            {data.gift && <GiftSection data={data as any} />}
-            <RSVPSection data={data as any} invitationId={dbId} />
-            <footer className="invite-footer">
+            <SectionWrapper id="general" active={selectedSection === 'general'} onClick={onSectionSelect}>
+               <HeroSection data={data as any} />
+            </SectionWrapper>
+
+            {data.layout?.showOrganizers && data.organizers && data.organizers.length > 0 && (
+               <SectionWrapper id="organizers" active={selectedSection === 'organizers'} onClick={onSectionSelect}>
+                  <OrganizersSection data={data as any} />
+               </SectionWrapper>
+            )}
+
+            {data.layout?.showCountdown && (
+               <SectionWrapper id="layout" active={selectedSection === 'layout'} onClick={onSectionSelect}>
+                  <CountdownSection data={data as any} />
+               </SectionWrapper>
+            )}
+
+            {data.layout?.showEvents && (
+               <SectionWrapper id="events" active={selectedSection === 'events'} onClick={onSectionSelect}>
+                  <EventDetailsSection data={data as any} />
+               </SectionWrapper>
+            )}
+
+            {data.layout?.showDresscode && data.dresscode && (
+               <SectionWrapper id="dresscode" active={selectedSection === 'dresscode'} onClick={onSectionSelect}>
+                  <DresscodeSection data={data as any} />
+               </SectionWrapper>
+            )}
+
+            {data.layout?.showGallery && data.gallery && data.gallery.length > 0 && (
+               <SectionWrapper id="gallery" active={selectedSection === 'gallery'} onClick={onSectionSelect}>
+                  <GallerySection data={data as any} />
+               </SectionWrapper>
+            )}
+
+            {data.layout?.showStory && data.story && data.story.length > 0 && (
+               <SectionWrapper id="story" active={selectedSection === 'story'} onClick={onSectionSelect}>
+                  <StorySection data={data as any} />
+               </SectionWrapper>
+            )}
+
+            {data.layout?.showGift && data.gift && (
+               <SectionWrapper id="gift" active={selectedSection === 'gift'} onClick={onSectionSelect}>
+                  <GiftSection data={data as any} />
+               </SectionWrapper>
+            )}
+
+            {data.layout?.showRSVP !== false && (
+               <SectionWrapper id="general" active={selectedSection === 'general'} onClick={onSectionSelect}>
+                  <RSVPSection data={data as any} invitationId={dbId} />
+               </SectionWrapper>
+            )}
+            
+            <footer className="invite-footer" onClick={() => onSectionSelect?.('theme')} style={{ cursor: onSectionSelect ? 'pointer' : 'default' }}>
               <p>Made with ♥ by <strong>Baswara</strong></p>
               <p className="invite-footer-sub">Platform Undangan Digital Terbaik di Indonesia</p>
             </footer>
@@ -232,7 +304,31 @@ export default function EventInvitationClient({
         )}
       </main>
 
-      {opened && <MusicPlayer />}
+      {opened && (
+        <div onClick={() => onSectionSelect?.('music')} style={{ cursor: onSectionSelect ? 'pointer' : 'default' }}>
+           <MusicPlayer data={data as any} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SectionWrapper({ id, active, onClick, children }: any) {
+  if (!onClick) return <>{children}</>;
+  return (
+    <div 
+      onClick={() => onClick(id)}
+      className={cn(
+        "relative transition-all duration-300 cursor-pointer group",
+        active ? "ring-2 ring-primary ring-inset z-10" : "hover:ring-1 hover:ring-primary/30"
+      )}
+    >
+      {active && (
+        <div className="absolute top-2 right-2 bg-primary text-white text-[8px] font-black px-2 py-0.5 rounded-full z-20 uppercase tracking-widest shadow-lg">
+          Editing {id}
+        </div>
+      )}
+      {children}
     </div>
   );
 }

@@ -35,10 +35,33 @@ function EditorContent() {
 
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [editorTab, setEditorTab] = useState<EditorTab>("templates");
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [device, setDevice] = useState<Device>("mobile");
   const [orientation, setOrientation] = useState<Orientation>("portrait");
   
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleSectionSelect = (sectionId: string) => {
+    // Map section IDs to editor tabs
+    const tabMap: Record<string, EditorTab> = {
+      general: 'general',
+      organizers: 'organizers',
+      layout: 'layout',
+      events: 'events',
+      dresscode: 'dresscode',
+      gallery: 'gallery',
+      story: 'story',
+      gift: 'gift',
+      music: 'music',
+      theme: 'theme'
+    };
+
+    if (tabMap[sectionId]) {
+      setEditorTab(tabMap[sectionId]);
+      setSelectedSection(sectionId);
+      setActiveTab('edit'); // Switch to editor view on mobile if a section is clicked
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen bg-[#fafafa] font-sans selection:bg-primary/10 text-zinc-900">
@@ -54,12 +77,15 @@ function EditorContent() {
       <div className="flex-1 flex flex-col sm:flex-row overflow-hidden relative">
         <StudioNavigation 
           editorTab={editorTab}
-          setEditorTab={setEditorTab}
+          setEditorTab={(tab) => {
+            setEditorTab(tab);
+            setSelectedSection(null); // Clear selection when manually switching tabs
+          }}
         />
 
         <div className="flex-1 flex overflow-hidden pb-16 sm:pb-0">
           {/* EDITOR AREA */}
-          <div className={`${activeTab === "edit" ? "flex" : "hidden"} md:flex overflow-hidden`}>
+          <div className={`${activeTab === "edit" ? "flex" : "hidden"} sm:flex overflow-hidden`}>
             <StudioEditor 
               editorTab={editorTab}
               data={data}
@@ -82,6 +108,8 @@ function EditorContent() {
             setOrientation={setOrientation}
             containerRef={containerRef}
             activeTab={activeTab}
+            selectedSection={selectedSection || undefined}
+            onSectionSelect={handleSectionSelect}
           />
         </div>
       </div>

@@ -13,9 +13,19 @@ export default function GiftSection({ data }: { data: EventInvitationData }) {
     setTimeout(() => setCopied(null), 2000);
   }
 
+  const getGiftLabel = () => {
+    switch (data.eventType) {
+      case 'wedding': return 'Wedding Gift';
+      case 'birthday': return 'Kado Ulang Tahun';
+      case 'seminar': return 'Donasi / Kontribusi';
+      case 'party': return 'Hadiah Acara';
+      default: return 'Gift Registry';
+    }
+  };
+
   return (
     <section className="inv-section">
-      <p className="inv-section-label">{data.eventType === 'wedding' ? 'Wedding Gift' : 'Gift Registry'}</p>
+      <p className="inv-section-label">{getGiftLabel()}</p>
       <h2 className="inv-section-title">Amplop <em>Digital</em></h2>
       <p className="inv-section-sub">Doa restu Anda merupakan karunia terbesar bagi kami. Namun jika ingin memberikan tanda kasih, silakan melalui:</p>
 

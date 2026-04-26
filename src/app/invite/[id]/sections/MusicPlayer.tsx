@@ -1,27 +1,43 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { EventInvitationData } from "@/lib/types";
 
-export default function MusicPlayer() {
+export default function MusicPlayer({ data }: { data: EventInvitationData }) {
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    // Free-use background music via ccmixter / free source
-    audioRef.current = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.3;
-    return () => { audioRef.current?.pause(); };
-  }, []);
+  const musicUrl = data.music?.url;
+  const autoPlay = data.music?.autoPlay;
 
-  function toggle() {
+  useEffect(() => {
+    if (musicUrl && audioRef.current) {
+      audioRef.current.load();
+      if (autoPlay) {
+        // Autoplay usually requires user interaction first, 
+        // so this might be blocked by browsers until first click.
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => setPlaying(true)).catch(() => setPlaying(false));
+        }
+      }
+    }
+  }, [musicUrl, autoPlay]);
+
+  const toggle = () => {
     if (!audioRef.current) return;
-    if (playing) { audioRef.current.pause(); }
-    else { audioRef.current.play().catch(() => {}); }
+    if (playing) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
     setPlaying(!playing);
   }
 
+  if (!musicUrl) return null;
+
   return (
     <div className="inv-music">
+      <audio ref={audioRef} loop src={musicUrl} />
       <button 
         className={`inv-music-btn${playing ? " playing" : ""}`} 
         onClick={toggle} 

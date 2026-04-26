@@ -5,12 +5,25 @@ import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
-export function NavIcon({ icon, active, onClick }: { icon: React.ReactNode, active: boolean, onClick: () => void }) {
+export function NavIcon({ icon, active, onClick, label }: { icon: React.ReactNode, active: boolean, onClick: () => void, label?: string }) {
   return (
-    <button onClick={onClick} className={`p-3 rounded-2xl transition-all relative ${active ? 'bg-primary text-white shadow-lg scale-110' : 'text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900'}`}>
-      {icon}
-      {active && <motion.div layoutId="nav-glow" className="absolute -inset-1 bg-primary/20 blur-md -z-10 rounded-2xl" />}
+    <button 
+      onClick={onClick} 
+      className={cn(
+        "flex flex-col items-center justify-center gap-1 w-full py-2 transition-all relative group",
+        active ? "text-primary" : "text-zinc-400 hover:text-zinc-900"
+      )}
+    >
+      <div className={cn(
+        "p-2 rounded-xl transition-all",
+        active ? "bg-primary/10" : "group-hover:bg-zinc-100"
+      )}>
+        {icon}
+      </div>
+      {label && <span className="text-[9px] font-bold uppercase tracking-tighter hidden sm:block">{label}</span>}
+      {active && <motion.div layoutId="rail-indicator" className="absolute left-0 w-1 h-8 bg-primary rounded-r-full hidden sm:block" />}
     </button>
   );
 }
@@ -68,5 +81,30 @@ export function DeviceBtn({ active, onClick, icon, label }: any) {
       {icon}
       <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
     </button>
+  );
+}
+
+export function VisibilityToggle({ label, active, onChange }: { label: string, active: boolean, onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between p-4 bg-[#fafafa] rounded-2xl border border-zinc-100 group hover:border-zinc-200 transition-all">
+       <div className="flex items-center gap-3">
+          <div className={cn("p-1.5 rounded-lg transition-colors", active ? "bg-primary/10 text-primary" : "bg-zinc-100 text-zinc-300")}>
+            <Check size={12}/>
+          </div>
+          <span className={cn("text-[11px] font-bold transition-colors", active ? "text-zinc-900" : "text-zinc-400")}>{label}</span>
+       </div>
+       <button 
+         onClick={() => onChange(!active)}
+         className={cn(
+           "w-10 h-5 rounded-full relative transition-all duration-300 px-1",
+           active ? "bg-primary" : "bg-zinc-200"
+         )}
+       >
+          <div className={cn(
+            "w-3 h-3 bg-white rounded-full transition-all duration-300 transform",
+            active ? "translate-x-5" : "translate-x-0"
+          )} />
+       </button>
+    </div>
   );
 }

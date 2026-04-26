@@ -27,47 +27,67 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<"active" | "past">("active");
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchDashboardData() {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        router.push('/login');
-        return;
-      }
-
-      // 1. Fetch Invitations with RSVP counts
-      const { data: invites, error } = await supabase
-        .from('invitations')
-        .select(`
-          *,
-          rsvps (id, status, guest_count)
-        `)
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false });
-
-      if (!error && invites) {
-        setInvitations(invites);
-      }
-
-      // 2. Fetch Recent Activity across all invitations
-      const { data: activities } = await supabase
-        .from('rsvps')
-        .select(`
-          *,
-          invitations (title, event_type)
-        `)
-        .in('invitation_id', invites?.map(i => i.id) || [])
-        .order('created_at', { ascending: false })
-        .limit(6);
-
-      if (activities) setRecentRSVPs(activities);
-      
-      setLoading(false);
+  async function fetchDashboardData() {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      router.push('/login');
+      return;
     }
 
+    // 1. Fetch Invitations with RSVP counts
+    const { data: invites, error } = await supabase
+      .from('invitations')
+      .select(`
+        *,
+        rsvps (id, status, guest_count)
+      `)
+      .eq('user_id', session.user.id)
+      .order('created_at', { ascending: false });
+
+    if (!error && invites) {
+      setInvitations(invites);
+    }
+
+    // 2. Fetch Recent Activity across all invitations
+    const { data: activities } = await supabase
+      .from('rsvps')
+      .select(`
+        *,
+        invitations (title, event_type)
+      `)
+      .in('invitation_id', invites?.map(i => i.id) || [])
+      .order('created_at', { ascending: false })
+      .limit(6);
+
+    if (activities) setRecentRSVPs(activities);
+    
+    setLoading(false);
+  }
+
+  useEffect(() => {
     fetchDashboardData();
   }, [router]);
+
+  const handleDeleteInvitation = async (id: string) => {
+    if (!confirm("Are you sure you want to permanently delete this invitation? This will also remove all guest RSVPs.")) return;
+
+    try {
+      const { error } = await supabase
+        .from('invitations')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      // Refresh local state
+      setInvitations(invitations.filter(inv => inv.id !== id));
+      // Re-fetch recent activity
+      fetchDashboardData();
+    } catch (err: any) {
+      alert("Error deleting: " + err.message);
+    }
+  };
 
   // Logic for stats
   const stats = useMemo(() => {
@@ -136,8 +156,8 @@ export default function Dashboard() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                    <h2 className="text-2xl font-black uppercase tracking-tight text-zinc-900">Your <span className="text-primary italic">Creations</span></h2>
                    <div className="flex bg-white p-1 rounded-xl shadow-sm border border-zinc-100">
-                      <TabBtn active={activeTab === "active"} onClick={() => setActiveTab("active")} label="Upcoming" />
-                      <TabBtn active={activeTab === "past"} onClick={() => setActiveTab("past")} label="Past Events" />
+                      <TabBtn active={activeTab === "active"} onClick={() => setActiveTab("active")} label="Active" />
+                      <TabBtn active={activeTab === "past"} onClick={() => setActiveTab("past")} label="Archive" />
                    </div>
                 </div>
 
@@ -184,7 +204,10 @@ export default function Dashboard() {
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <InvitationCard invite={invite} />
+                        <InvitationCard 
+                          invite={invite} 
+                          onDelete={() => handleDeleteInvitation(invite.id)} 
+                        />
                       </motion.div>
                     ))}
                   </AnimatePresence>
@@ -281,7 +304,7 @@ function TabBtn({ active, onClick, label }: any) {
   );
 }
 
-function InvitationCard({ invite }: { invite: any }) {
+function InvitationCard({ invite, onDelete }: { invite: any, onDelete: () => void }) {
   const data = invite.data;
   const eventType = invite.event_type || 'wedding';
   const rsvps = invite.rsvps || [];
@@ -289,64 +312,104 @@ function InvitationCard({ invite }: { invite: any }) {
   const confirmedCount = rsvps.filter((r:any) => r.status === 'hadir').reduce((a:number, b:any) => a + (b.guest_count || 1), 0);
   const responseCount = rsvps.length;
 
+  const eventDate = new Date(data.mainDate);
+  const isPast = eventDate < new Date();
+  const diffTime = eventDate.getTime() - new Date().getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
   const getIcon = () => {
     switch(eventType) {
-      case 'wedding': return <Heart className="text-rose-500 fill-rose-500" size={12} />;
-      case 'birthday': return <PartyPopper className="text-amber-500" size={12} />;
-      case 'corporate': return <Briefcase className="text-blue-500" size={12} />;
-      default: return <img src="/Main-logo.svg" alt="" className="h-3 w-auto" />;
+      case 'wedding': return <Heart className="text-rose-500 fill-rose-500" size={14} />;
+      case 'birthday': return <PartyPopper className="text-amber-500" size={14} />;
+      case 'corporate': return <Briefcase className="text-blue-500" size={14} />;
+      default: return <Sparkles className="text-primary" size={14} />;
     }
   };
 
   return (
-    <Card className="overflow-hidden border-none shadow-sm hover:shadow-2xl transition-all duration-500 group rounded-[2.5rem] bg-white border border-zinc-100/50">
-      <div className="aspect-[16/10] relative overflow-hidden m-2.5 rounded-[2rem] bg-zinc-50">
+    <Card className="overflow-hidden border-none shadow-sm hover:shadow-2xl transition-all duration-500 group rounded-[2.5rem] bg-white border border-zinc-100/50 relative">
+      {/* CARD IMAGE & OVERLAYS */}
+      <div className="aspect-[16/9] relative overflow-hidden m-2 rounded-[2.2rem] bg-zinc-100">
         {data.gallery?.[0] ? (
-          <img src={data.gallery[0]} alt={data.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          <img src={data.gallery[0]} alt={data.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
         ) : (
           <div className="w-full h-full flex items-center justify-center opacity-10"><img src="/Main-logo.svg" alt="" className="h-10 w-auto" /></div>
         )}
-        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 shadow-sm border border-white/20">
-           {getIcon()}
-           <span className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-900">{eventType}</span>
+        
+        {/* Floating Context Bar */}
+        <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none">
+          <div className="bg-white/70 backdrop-blur-xl px-3 py-1.5 rounded-full flex items-center gap-2 shadow-sm border border-white/40 pointer-events-auto">
+             {getIcon()}
+             <span className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-900">{eventType}</span>
+          </div>
+          
+          <div className="flex gap-2 pointer-events-auto">
+            {!isPast && diffDays <= 30 && (
+              <div className="bg-zinc-900/80 backdrop-blur-xl text-white px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg">
+                {diffDays} Days Left
+              </div>
+            )}
+            {isPast && (
+              <div className="bg-zinc-100/80 backdrop-blur-xl text-zinc-500 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest">
+                Archived
+              </div>
+            )}
+            <button 
+              onClick={(e) => { e.preventDefault(); onDelete(); }}
+              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xl text-white flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-500 transition-all duration-300 shadow-lg border border-white/20"
+              title="Delete Invitation"
+            >
+               <Trash2 size={12} />
+            </button>
+          </div>
         </div>
       </div>
       
-      <CardHeader className="px-7 pt-4 pb-0">
-        <CardTitle className="text-xl font-black tracking-tight text-zinc-900 uppercase truncate">{data.title}</CardTitle>
-        <div className="flex items-center gap-2 text-zinc-400 mt-1">
-           <Calendar size={12} />
-           <span className="text-[9px] font-bold uppercase tracking-widest">
-             {data.mainDate ? new Date(data.mainDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Pending'}
-           </span>
+      {/* CONTENT AREA */}
+      <div className="p-7 pt-5 space-y-5">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+             <CardTitle className="text-xl font-black tracking-tight text-zinc-900 uppercase truncate leading-none">
+               {data.title}
+             </CardTitle>
+             <button className="text-zinc-300 hover:text-primary transition-colors"><ExternalLink size={14} /></button>
+          </div>
+          <div className="flex items-center gap-2 text-zinc-400">
+             <div className="flex items-center gap-1.5 bg-zinc-50 px-2 py-1 rounded-lg border border-zinc-100">
+                <Calendar size={10} className="text-zinc-500" />
+                <span className="text-[9px] font-black uppercase tracking-wider text-zinc-600">
+                  {data.mainDate ? new Date(data.mainDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Pending'}
+                </span>
+             </div>
+             <span className="text-[10px] font-medium text-zinc-300">/ {invite.slug}</span>
+          </div>
         </div>
-      </CardHeader>
-      
-      <CardContent className="px-7 pt-6 pb-2">
-         {/* RSVP Progress */}
-         <div className="space-y-2">
-            <div className="flex justify-between items-end">
-               <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">RSVP Status</span>
-               <span className="text-[10px] font-bold text-zinc-900">{confirmedCount} Confirmed</span>
-            </div>
-            <div className="h-1.5 bg-zinc-50 rounded-full overflow-hidden flex">
-               <div className="h-full bg-emerald-400" style={{ width: `${Math.min(100, (confirmedCount/100)*100)}%` }} />
-               <div className="h-full bg-amber-300 opacity-30" style={{ width: `${Math.max(0, ((responseCount-confirmedCount)/100)*100)}%` }} />
-            </div>
-         </div>
-      </CardContent>
-      
-      <CardFooter className="px-6 pb-6 pt-4 grid grid-cols-2 gap-3">
-         <Link href={`/invite/customize?id=${invite.id}`} className={cn(buttonVariants({ size: "sm" }), "rounded-xl font-black text-[9px] tracking-widest h-10 shadow-lg shadow-primary/10 transition-all active:scale-95 bg-zinc-900 hover:bg-primary")}>
-            <Settings size={12} className="mr-2" /> STUDIO
-         </Link>
-         <Link href={`/dashboard/${invite.id}`} className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "rounded-xl font-black text-[9px] tracking-widest h-10 bg-white hover:bg-zinc-50 text-zinc-600 border border-zinc-100 shadow-sm")}>
-            <Users size={12} className="mr-2" /> GUESTS
-         </Link>
-         <Link href={`/invite/${invite.id}`} target="_blank" className="col-span-2 text-center text-[9px] font-bold text-zinc-300 hover:text-primary transition-colors tracking-widest uppercase flex items-center justify-center gap-1.5 mt-1">
-            Open live site <ExternalLink size={10} />
-         </Link>
-      </CardFooter>
+        
+        {/* PROGRESS METRICS */}
+        <div className="space-y-2.5 bg-zinc-50/50 p-4 rounded-2xl border border-zinc-100">
+           <div className="flex justify-between items-end">
+              <div className="flex items-center gap-2">
+                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                 <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">RSVP Status</span>
+              </div>
+              <span className="text-[10px] font-bold text-zinc-900">{confirmedCount} <span className="text-zinc-400 font-medium">Guests Confirmed</span></span>
+           </div>
+           <div className="h-2 bg-zinc-100 rounded-full overflow-hidden flex gap-0.5">
+              <div className="h-full bg-emerald-500 transition-all duration-1000" style={{ width: `${Math.min(100, (confirmedCount/100)*100)}%` }} />
+              <div className="h-full bg-amber-400 opacity-20 transition-all duration-1000" style={{ width: `${Math.max(0, ((responseCount-confirmedCount)/100)*100)}%` }} />
+           </div>
+        </div>
+
+        {/* ACTIONS */}
+        <div className="grid grid-cols-2 gap-3 pt-1">
+           <Link href={`/invite/customize?id=${invite.id}`} className={cn(buttonVariants({ size: "sm" }), "rounded-2xl font-black text-[10px] tracking-[0.1em] h-12 shadow-xl shadow-zinc-900/10 transition-all active:scale-95 bg-zinc-900 hover:bg-zinc-800 border-none")}>
+              <Settings size={14} className="mr-2 opacity-50" /> STUDIO
+           </Link>
+           <Link href={`/dashboard/${invite.id}`} className={cn(buttonVariants({ variant: "outline", size: "sm" }), "rounded-2xl font-black text-[10px] tracking-[0.1em] h-12 bg-white hover:bg-zinc-50 text-zinc-600 border-zinc-200 shadow-sm")}>
+              <Users size={14} className="mr-2 opacity-50" /> ANALYTICS
+           </Link>
+        </div>
+      </div>
     </Card>
   );
 }

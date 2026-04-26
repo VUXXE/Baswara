@@ -6,32 +6,7 @@
 
 /* === ROOT LAYOUT === */
 .invite-root {
-  /* Default Variables (Fallback) */
-  --inv-bg: #f0ebe3;
-  --inv-surface: #faf7f2;
-  --inv-primary: #c17a6f;
-  --inv-primary-dark: #8b4a42;
-  --inv-accent: #8fad9e;
-  --inv-gold: #b89a6a;
-  --inv-text: #3a2e2a;
-  --inv-muted: #7a6b63;
-  --inv-border: #ddd0c5;
-  --inv-radius: 24px;
-  --inv-font-display: 'Great Vibes', cursive;
-  --inv-font-heading: 'Cormorant Garamond', serif;
-  --inv-font-body: 'DM Sans', sans-serif;
-  
-  --inv-heading-size: 2.8rem;
-  --inv-heading-weight: 400;
-  --inv-heading-line-height: 1.2;
-  --inv-heading-letter-spacing: 0em;
-  --inv-heading-transform: none;
-  --inv-body-size: 0.95rem;
-  --inv-body-weight: 400;
-  --inv-body-line-height: 1.6;
-  --inv-body-letter-spacing: 0.02em;
-  --inv-body-transform: none;
-
+  /* ... existing variables ... */
   display: flex;
   min-height: 100vh;
   min-height: 100dvh;
@@ -40,19 +15,13 @@
   background-color: var(--inv-surface, #faf7f2);
   color: var(--inv-text, #3a2e2a);
   font-family: var(--inv-font-body);
-  font-size: var(--inv-body-size);
-  font-weight: var(--inv-body-weight);
-  line-height: var(--inv-body-line-height);
-  letter-spacing: var(--inv-body-letter-spacing);
-  text-transform: var(--inv-body-transform);
   overflow-x: hidden;
   
-  /* Container queries for editor */
   container-type: inline-size;
   container-name: invite;
 }
 
-/* === LEFT PANEL (Desktop) === */
+/* === LEFT PANEL === */
 .invite-left {
   position: fixed;
   top: 0;
@@ -64,6 +33,30 @@
   z-index: 10;
   display: block;
 }
+
+/* Hide side panel by default for non-weddings or centered templates */
+.type-seminar .invite-left,
+.type-corporate .invite-left,
+.type-party .invite-left,
+.tpl-modern .invite-left,
+.tpl-floral .invite-left,
+.tpl-playful .invite-left {
+  display: none !important;
+}
+
+/* Adjust right panel when left is hidden */
+.type-seminar .invite-right,
+.type-corporate .invite-right,
+.type-party .invite-right,
+.tpl-modern .invite-right,
+.tpl-floral .invite-right,
+.tpl-playful .invite-right {
+  margin-left: 0 !important;
+  width: 100% !important;
+}
+
+/* If it's a wedding but user chose a centered template, also hide left */
+.tpl-modern .invite-left, .tpl-floral .invite-left { display: none !important; }
 
 .invite-left-bg {
   position: absolute;
@@ -253,9 +246,48 @@
 .inv-section-title em {
   font-style: italic;
   color: var(--inv-primary);
+  /* Use heading font for em if not wedding to look more professional */
+  font-family: var(--inv-font-heading);
+  font-size: 1.05em;
+  opacity: 0.8;
+}
+
+.type-wedding .inv-section-title em {
   font-family: var(--inv-font-display);
-  font-size: 1.1em;
-  margin-left: 0.1em;
+  font-size: 1.15em;
+  opacity: 1;
+}
+
+/* === UNIVERSAL TYPE OVERRIDES === */
+
+/* Professional / Corporate / Seminar Styles */
+.type-corporate .invite-root, .type-seminar .invite-root {
+  --inv-radius: 12px;
+}
+
+.type-corporate .inv-hero-divider, .type-seminar .inv-hero-divider {
+  width: 60px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.type-corporate .inv-section-label, .type-seminar .inv-section-label {
+  letter-spacing: 0.15em;
+  font-weight: 800;
+}
+
+.type-corporate .inv-section-label::before, .type-corporate .inv-section-label::after,
+.type-seminar .inv-section-label::before, .type-seminar .inv-section-label::after {
+  display: none;
+}
+
+/* Birthday / Party Styles */
+.type-birthday .invite-root, .type-party .invite-root {
+  --inv-radius: 40px;
+}
+
+.type-birthday .inv-hero-names, .type-party .inv-hero-names {
+  letter-spacing: -0.03em;
 }
 
 .inv-section-sub {

@@ -1,15 +1,51 @@
 import { EventInvitationData } from "@/lib/types";
 
 export default function EventDetailsSection({ data }: { data: EventInvitationData }) {
+  const getLabels = () => {
+    switch (data.eventType) {
+      case 'wedding':
+        return {
+          label: "Rangkaian Acara",
+          title: <>Waktu & <em>Tempat</em></>,
+          sub: "Kehadiran Anda adalah kebahagiaan terbesar kami"
+        };
+      case 'birthday':
+        return {
+          label: "Info Pesta",
+          title: <>Kapan & <em>Dimana</em></>,
+          sub: "Datang ya untuk merayakan hari spesialku!"
+        };
+      case 'seminar':
+        return {
+          label: "Agenda",
+          title: <>Jadwal <em>Sesi</em></>,
+          sub: "Silakan perhatikan waktu dan lokasi setiap sesi"
+        };
+      default:
+        return {
+          label: "Informasi Acara",
+          title: <>Waktu & <em>Lokasi</em></>,
+          sub: "Detail pelaksanaan acara kami"
+        };
+    }
+  };
+
+  const labels = getLabels();
+
   return (
     <section className="inv-section">
-      <p className="inv-section-label">Rangkaian Acara</p>
-      <h2 className="inv-section-title">Waktu &amp; <em>Tempat</em></h2>
-      <p className="inv-section-sub">Kehadiran Anda adalah kebahagiaan terbesar kami</p>
+      <p className="inv-section-label">{labels.label}</p>
+      <h2 className="inv-section-title">{labels.title}</h2>
+      <p className="inv-section-sub">{labels.sub}</p>
 
       <div className="inv-event-cards">
         {data.events?.map((ev) => (
           <div className="inv-event-card" key={ev.name}>
+            {ev.image && (
+              <div className="w-full h-40 mb-4 overflow-hidden rounded-2xl">
+                 <img src={ev.image} alt={ev.name} className="w-full h-full object-cover" />
+              </div>
+            )}
             <span className="inv-event-badge">{ev.name}</span>
             <p className="inv-event-date">{ev.date}</p>
             <p className="inv-event-time">{ev.time}</p>

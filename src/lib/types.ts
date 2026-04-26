@@ -35,6 +35,10 @@ export interface EventInvitationData {
   title: string;
   subTitle?: string;
   description?: string;
+  heroImage?: string;
+  sideImage?: string;
+  envelopeImage?: string;
+  backgroundImage?: string;
   
   // Specific for weddings but generic enough for others
   organizers?: {
@@ -46,6 +50,17 @@ export interface EventInvitationData {
     subText?: string; // e.g. parents info
   }[];
 
+  layout?: {
+    showOrganizers: boolean;
+    showCountdown: boolean;
+    showEvents: boolean;
+    showDresscode: boolean;
+    showGallery: boolean;
+    showStory: boolean;
+    showGift: boolean;
+    showRSVP: boolean;
+  };
+
   events: {
     name: string;
     date: string;
@@ -54,6 +69,7 @@ export interface EventInvitationData {
     address: string;
     mapsUrl: string;
     googleMapsEmbedUrl?: string;
+    image?: string;
   }[];
   
   mainDate: string;
@@ -62,6 +78,7 @@ export interface EventInvitationData {
     theme: string;
     palette: string[];
     note: string;
+    image?: string;
   };
   
   gallery?: string[];
@@ -70,6 +87,7 @@ export interface EventInvitationData {
     year: string;
     title: string;
     desc: string;
+    image?: string;
   }[];
   
   gift?: {
@@ -79,6 +97,11 @@ export interface EventInvitationData {
       accountNumber: string;
     }[];
     address: string;
+  };
+  
+  music?: {
+    url: string;
+    autoPlay: boolean;
   };
   
   theme: {

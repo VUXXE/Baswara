@@ -14,6 +14,8 @@ interface StudioPreviewProps {
   setOrientation: (o: any) => void;
   containerRef: React.RefObject<HTMLDivElement | null>;
   activeTab: "edit" | "preview";
+  selectedSection?: string;
+  onSectionSelect?: (section: string) => void;
 }
 
 export function StudioPreview({
@@ -23,7 +25,9 @@ export function StudioPreview({
   orientation,
   setOrientation,
   containerRef,
-  activeTab
+  activeTab,
+  selectedSection,
+  onSectionSelect
 }: StudioPreviewProps) {
   const [scale, setScale] = useState(1);
 
@@ -76,6 +80,8 @@ export function StudioPreview({
                  forceOpen={true} 
                  viewMode={device}
                  orientation={orientation}
+                 onSectionSelect={onSectionSelect}
+                 selectedSection={selectedSection}
                />
              </div>
            </div>
