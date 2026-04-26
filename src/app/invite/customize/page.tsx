@@ -67,6 +67,7 @@ function EditorContent() {
     <div className="flex flex-col h-screen bg-[#fafafa] font-sans selection:bg-primary/10 text-zinc-900">
       <StudioHeader 
         router={router}
+        slug={slug}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         lastSaved={lastSaved}

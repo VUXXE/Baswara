@@ -408,6 +408,13 @@ function InvitationCard({ invite, onDelete }: { invite: any, onDelete: () => voi
            <Link href={`/dashboard/${invite.id}`} className={cn(buttonVariants({ variant: "outline", size: "sm" }), "rounded-2xl font-black text-[10px] tracking-[0.1em] h-12 bg-white hover:bg-zinc-50 text-zinc-600 border-zinc-200 shadow-sm")}>
               <Users size={14} className="mr-2 opacity-50" /> ANALYTICS
            </Link>
+           <Link 
+             href={`/${invite.slug}`} 
+             target="_blank" 
+             className="col-span-2 text-center text-[9px] font-bold text-zinc-300 hover:text-primary transition-colors tracking-widest uppercase flex items-center justify-center gap-1.5 mt-1"
+           >
+              Open live site <ExternalLink size={10} />
+           </Link>
         </div>
       </div>
     </Card>
