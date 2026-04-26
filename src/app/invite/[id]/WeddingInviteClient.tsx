@@ -12,6 +12,7 @@ import GiftSection from "./sections/GiftSection";
 import RSVPSection from "./sections/RSVPSection";
 import MusicPlayer from "./sections/MusicPlayer";
 import { WeddingData } from "@/lib/types";
+import "../invite.css";
 
 // Mock data — in production this would come from your API/db
 export const DEFAULT_WEDDING_DATA: WeddingData = {

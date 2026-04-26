@@ -28,7 +28,8 @@ export default function LoginPage() {
           password,
         });
         if (error) throw error;
-        alert("Check your email for the confirmation link!");
+        // If sign up is successful, we send them to onboarding
+        router.push("/onboarding");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,

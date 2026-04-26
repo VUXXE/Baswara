@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "./[id]/invite.css";
 
 export const metadata: Metadata = {
   title: "Undangan Pernikahan | Baswara",
