@@ -343,7 +343,7 @@ export default function EventInvitationClient({
               <p>Made with ♥ by <strong>Baswara</strong></p>
               <p className="invite-footer-sub">Platform Undangan Digital Terbaik di Indonesia</p>
             </footer>
-          </div>
+          </motion.div>
         )}
       </main>
 

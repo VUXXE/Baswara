@@ -5,7 +5,8 @@ import { EventInvitationData } from "@/lib/types";
 export default function GiftSection({ data }: { data: EventInvitationData }) {
   const [copied, setCopied] = useState<string | null>(null);
 
-  if (!data.gift) return null;
+  const gift = data.gift;
+  if (!gift) return null;
 
   function copy(text: string, key: string) {
     navigator.clipboard.writeText(text);
@@ -30,7 +31,7 @@ export default function GiftSection({ data }: { data: EventInvitationData }) {
       <p className="inv-section-sub">Doa restu Anda merupakan karunia terbesar bagi kami. Namun jika ingin memberikan tanda kasih, silakan melalui:</p>
 
       <div className="inv-gift-cards">
-        {data.gift.banks?.map((b) => (
+        {gift.banks?.map((b) => (
           <div className="inv-gift-card" key={b.bank + b.accountNumber}>
             <div>
               <p className="inv-gift-bank">{b.bank}</p>
@@ -47,15 +48,15 @@ export default function GiftSection({ data }: { data: EventInvitationData }) {
         ))}
       </div>
 
-      {data.gift.address && (
+      {gift.address && (
         <div className="inv-gift-address">
           <div>
             <p className="inv-gift-addr-label">Alamat Pengiriman</p>
-            <p className="inv-gift-addr-text">{data.gift.address}</p>
+            <p className="inv-gift-addr-text">{gift.address}</p>
           </div>
           <button
             className={`inv-copy-btn${copied === "addr" ? " copied" : ""}`}
-            onClick={() => copy(data.gift.address, "addr")}
+            onClick={() => copy(gift.address, "addr")}
           >
             {copied === "addr" ? "✓ Tersalin" : "Salin"}
           </button>

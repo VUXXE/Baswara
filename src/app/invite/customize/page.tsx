@@ -10,7 +10,7 @@ import { StudioNavigation } from "@/components/studio/StudioNavigation";
 import { StudioEditor } from "@/components/studio/StudioEditor";
 import { StudioPreview } from "@/components/studio/StudioPreview";
 
-type EditorTab = "templates" | "general" | "organizers" | "events" | "gallery" | "story" | "gift" | "theme";
+type EditorTab = "templates" | "general" | "organizers" | "events" | "gallery" | "story" | "gift" | "theme" | "layout" | "music" | "dresscode";
 type Device = "mobile" | "tablet" | "desktop";
 type Orientation = "portrait" | "landscape";
 
