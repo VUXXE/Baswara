@@ -1,0 +1,322 @@
+/* =============================================
+   BASWARA — Wedding Invite Template
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Great+Vibes&display=swap');
+
+/* === ROOT LAYOUT === */
+.invite-root {
+  --inv-bg: #f0ebe3;
+  --inv-surface: #faf7f2;
+  --inv-primary: #c17a6f;
+  --inv-primary-dark: #8b4a42;
+  --inv-accent: #8fad9e;
+  --inv-gold: #b89a6a;
+  --inv-text: #3a2e2a;
+  --inv-muted: #7a6b63;
+  --inv-border: #ddd0c5;
+  --inv-radius: 16px;
+  --inv-font-display: 'Great Vibes', cursive;
+  --inv-font-heading: 'Cormorant Garamond', serif;
+  --inv-font-body: 'DM Sans', sans-serif;
+  
+  /* Defaults for dynamic variables */
+  --inv-heading-size: 2.8rem;
+  --inv-heading-weight: 400;
+  --inv-heading-transform: none;
+  --inv-body-size: 0.9rem;
+  --inv-body-weight: 400;
+  --inv-body-transform: none;
+
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+  position: relative;
+  background: var(--inv-surface) !important;
+  font-family: var(--inv-font-body);
+  color: var(--inv-text);
+  font-size: var(--inv-body-size);
+  font-weight: var(--inv-body-weight);
+  text-transform: var(--inv-body-transform);
+  overflow-x: hidden;
+}
+
+/* === LEFT PANEL === */
+.invite-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 10;
+  display: block;
+}
+
+.invite-left-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&h=1200&fit=crop') center/cover no-repeat;
+  transform: scale(1.05);
+  transition: transform 8s ease-out;
+}
+
+.invite-left-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(193,122,111,0.55) 0%,
+    rgba(58,46,42,0.75) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: 48px;
+}
+
+.invite-left-content {
+  color: #fff;
+  text-align: left;
+}
+
+.invite-left-tag {
+  font-family: var(--inv-font-body);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 16px;
+}
+
+.invite-left-names {
+  font-family: var(--inv-font-display);
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 16px;
+}
+
+.invite-left-amp {
+  font-family: var(--inv-font-heading);
+  font-style: italic;
+  font-size: 0.4em;
+  opacity: 0.8;
+  display: block;
+  margin: 4px 0;
+}
+
+.invite-left-date {
+  font-family: var(--inv-font-heading);
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+
+.invite-left-hashtag {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  opacity: 0.65;
+}
+
+/* === RIGHT PANEL === */
+.invite-right {
+  margin-left: 42%;
+  width: 58%;
+  min-height: 100dvh;
+  overflow-y: auto;
+  background: var(--inv-surface);
+  position: relative;
+}
+
+/* === ENVELOPE SCREEN === */
+.invite-envelope {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 48px 32px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--inv-surface);
+  gap: 12px;
+}
+
+.envelope-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+}
+
+.envelope-greeting {
+  font-family: var(--inv-font-heading);
+  font-size: 0.85rem;
+  color: var(--inv-muted);
+  letter-spacing: 0.1em;
+}
+
+.envelope-name {
+  font-family: var(--inv-font-display);
+  font-size: 3rem;
+  color: var(--inv-primary);
+  line-height: 1;
+}
+
+.envelope-btn {
+  margin-top: 24px;
+  padding: 14px 40px;
+  background: var(--inv-primary);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  font-family: var(--inv-font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 8px 32px rgba(193,122,111,0.3);
+}
+
+/* === SECTION BASE === */
+.inv-section {
+  padding: 64px 48px;
+  border-bottom: 1px solid var(--inv-border);
+}
+
+.inv-section-label {
+  font-family: var(--inv-font-body);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--inv-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inv-section-label::before,
+.inv-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--inv-border);
+}
+
+.inv-section-title {
+  font-family: var(--inv-font-heading);
+  font-size: clamp(2rem, 4vw, var(--inv-heading-size));
+  font-weight: var(--inv-heading-weight);
+  text-transform: var(--inv-heading-transform);
+  color: var(--inv-text);
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1.15;
+}
+
+.inv-section-title em {
+  font-style: italic;
+  color: var(--inv-primary);
+}
+
+.inv-section-sub {
+  text-align: center;
+  color: var(--inv-muted);
+  font-size: 0.9rem;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* === RESPONSIVE LAYOUT (Classic Media Queries) === */
+@media (max-width: 850px) {
+  .invite-left { display: none !important; }
+  .invite-right { margin-left: 0 !important; width: 100% !important; }
+  .inv-section { padding: 48px 24px; }
+  .inv-hero { padding: 48px 24px 40px; }
+  .inv-event-cards { grid-template-columns: 1fr !important; }
+  .inv-couple-grid { grid-template-columns: 1fr !important; gap: 32px; }
+  .inv-gallery-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .inv-music { left: 24px !important; }
+}
+
+@media (max-width: 480px) {
+  .inv-countdown-grid { gap: 10px; }
+  .inv-countdown-unit { min-width: 60px; padding: 12px 8px; }
+  .inv-countdown-num { font-size: 2rem; }
+}
+
+/* === GALLERY === */
+.inv-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 32px;
+  border-radius: var(--inv-radius);
+  overflow: hidden;
+}
+
+.inv-gallery-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+/* === MUSIC PLAYER === */
+.inv-music {
+  position: fixed;
+  bottom: 28px;
+  left: calc(42% + 24px);
+  z-index: 100;
+}
+
+.inv-music-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--inv-primary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(193,122,111,0.35);
+}
+
+/* === RSVP FORM === */
+.inv-rsvp-form {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inv-form-input, .inv-form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--inv-border);
+  border-radius: 10px;
+  background: #fff;
+  outline: none;
+}
+
+.inv-submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--inv-primary);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Force layout via viewMode classes (for Preview) */
+.view-mobile .invite-left, .view-tablet.portrait .invite-left { display: none !important; }
+.view-mobile .invite-right, .view-tablet.portrait .invite-right { margin-left: 0 !important; width: 100% !important; }
+.view-mobile .inv-event-cards, .view-tablet.portrait .inv-event-cards { grid-template-columns: 1fr !important; }

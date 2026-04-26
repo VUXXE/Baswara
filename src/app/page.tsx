@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { useScroll } from 'framer-motion';
 
 import HeroSection from '@/components/landing/HeroSection';
+import Navbar from '@/components/Navbar';
 import StatsSection from '@/components/landing/StatsSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
 import WhyChooseUsSection from '@/components/landing/WhyChooseUsSection';
@@ -27,6 +28,7 @@ export default function Home() {
       {/* Noise Overlay */}
       <div className="noise-overlay opacity-[0.06]" />
 
+      <Navbar />
       <HeroSection />
       <StatsSection />
       <FeaturesSection />

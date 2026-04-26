@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import ProgressIndicator from "@/components/onboarding/ProgressIndicator";
@@ -9,16 +9,36 @@ import AccountStep from "@/components/onboarding/AccountStep";
 import RoleStep from "@/components/onboarding/RoleStep";
 import PreferenceStep from "@/components/onboarding/PreferenceStep";
 import SuccessStep from "@/components/onboarding/SuccessStep";
+import { supabase } from "@/lib/supabase";
+import { DEFAULT_WEDDING_DATA } from "../invite/[id]/WeddingInviteClient";
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     role: "",
-    theme: "",
+    theme: "classic",
   });
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push("/login");
+        return;
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        email: session.user.email || "",
+      }));
+      setLoading(false);
+    };
+    checkUser();
+  }, [router]);
 
   const totalSteps = 5;
 
@@ -35,9 +55,47 @@ export default function OnboardingPage() {
     if (step > 1 && step < 5) setStep(step - 1);
   };
 
-  const handleComplete = () => {
-    router.push("/dashboard");
+  const handleComplete = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      // 1. Update Profile
+      await supabase.from('profiles').upsert({
+        id: session.user.id,
+        full_name: formData.name,
+        updated_at: new Date().toISOString(),
+      });
+
+      // 2. Create initial Wedding
+      const slug = `${formData.name.toLowerCase().replace(/\s+/g, '-')}-wedding-${Math.floor(Math.random() * 1000)}`;
+      
+      const weddingData = {
+        ...DEFAULT_WEDDING_DATA,
+        hashtag: `#${formData.name.replace(/\s+/g, '')}Wedding`,
+        theme: {
+          ...DEFAULT_WEDDING_DATA.theme,
+          primaryColor: formData.theme === 'modern' ? '#3b82f6' : 
+                        formData.theme === 'elegant' ? '#1e1b4b' : '#c17a6f'
+        }
+      };
+
+      const { error } = await supabase.from('weddings').insert({
+        user_id: session.user.id,
+        slug: slug,
+        hashtag: weddingData.hashtag,
+        preset_design: formData.theme,
+        data: weddingData,
+      });
+
+      if (error) throw error;
+      router.push("/dashboard");
+    } catch (error: any) {
+      alert("Error completing onboarding: " + error.message);
+    }
   };
+
+  if (loading) return null;
 
   return (
     <div className="relative min-h-[calc(100vh-6rem)] flex flex-col items-center justify-center px-4 py-12 bg-[#fedbdf] overflow-hidden font-sans">

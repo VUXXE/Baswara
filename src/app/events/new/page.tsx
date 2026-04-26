@@ -1,12 +1,15 @@
 import { Button } from '@/components/ui/button';
+import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export default function CreateEventPage() {
   return (
-    <div className="container mx-auto px-6 py-12 flex justify-center">
-      <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
+    <div className="min-h-screen bg-background pb-12">
+      <Navbar />
+      <div className="container mx-auto px-6 py-24 flex justify-center">
+        <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">Create New Event</CardTitle>
           <CardDescription>Fill out the details below to generate your event page.</CardDescription>
@@ -49,6 +52,7 @@ export default function CreateEventPage() {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
