@@ -14,9 +14,12 @@ function getTimeLeft(target: string) {
 }
 
 export default function CountdownSection({ data }: { data: WeddingData }) {
-  const [time, setTime] = useState(getTimeLeft(data.weddingDate));
+  const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    setTime(getTimeLeft(data.weddingDate));
     const t = setInterval(() => setTime(getTimeLeft(data.weddingDate)), 1000);
     return () => clearInterval(t);
   }, [data.weddingDate]);

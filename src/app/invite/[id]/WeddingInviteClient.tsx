@@ -12,11 +12,12 @@ import GiftSection from "./sections/GiftSection";
 import RSVPSection from "./sections/RSVPSection";
 import MusicPlayer from "./sections/MusicPlayer";
 import { WeddingData } from "@/lib/types";
-import "../invite.css";
+import "./invite.css";
 
 // Mock data — in production this would come from your API/db
 export const DEFAULT_WEDDING_DATA: WeddingData = {
   id: "evt-001",
+  templateId: "classic",
   hashtag: "#BaswaraWedding",
   greeting: "Kepada Yth. Bapak/Ibu/Saudara/i",
   guestName: "Tamu Undangan",
@@ -44,6 +45,7 @@ export const DEFAULT_WEDDING_DATA: WeddingData = {
       location: "Masjid Al-Ikhlas",
       address: "Jl. Sudirman No. 12, Jakarta Pusat",
       mapsUrl: "https://maps.google.com",
+      googleMapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.46654763131!2d106.8202573!3d-6.2020294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3fe26390977%3A0x69680a65345717!2sMasjid%20Jami&#39;%20Al-Ikhlas!5e0!3m2!1sid!2sid!4v1711123456789!5m2!1sid!2sid"
     },
     {
       name: "Resepsi",
@@ -52,6 +54,7 @@ export const DEFAULT_WEDDING_DATA: WeddingData = {
       location: "Grand Ballroom Hotel Mulia",
       address: "Jl. Asia Afrika No. 8, Jakarta Selatan",
       mapsUrl: "https://maps.google.com",
+      googleMapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.3066329745424!2d106.7972442!3d-6.2232538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f14d3096d17b%3A0x10368a15993708e5!2sHotel%20Mulia%20Senayan!5e0!3m2!1sid!2sid!4v1711123456790!5m2!1sid!2sid"
     },
   ],
   weddingDate: "2026-06-14T08:00:00",
@@ -91,12 +94,16 @@ export const DEFAULT_WEDDING_DATA: WeddingData = {
       family: "'Cormorant Garamond', serif",
       size: "2.8rem",
       weight: "400",
+      lineHeight: "1.2",
+      letterSpacing: "0em",
       transform: "none",
     },
     fontBody: {
       family: "'DM Sans', sans-serif",
       size: "0.9rem",
       weight: "400",
+      lineHeight: "1.6",
+      letterSpacing: "0.02em",
       transform: "none",
     }
   }
@@ -107,12 +114,14 @@ export default function WeddingInviteClient({
   initialData, 
   forceOpen = false,
   viewMode = "desktop",
+  orientation = "portrait",
   dbId
 }: { 
   id: string, 
   initialData?: WeddingData, 
   forceOpen?: boolean,
   viewMode?: "mobile" | "tablet" | "desktop",
+  orientation?: "portrait" | "landscape",
   dbId?: string
 }) {
   const [opened, setOpened] = useState(forceOpen);
@@ -154,16 +163,22 @@ export default function WeddingInviteClient({
     "--inv-font-heading": data.theme.fontHeading.family,
     "--inv-heading-size": data.theme.fontHeading.size,
     "--inv-heading-weight": data.theme.fontHeading.weight,
+    "--inv-heading-line-height": data.theme.fontHeading.lineHeight || "1.2",
+    "--inv-heading-letter-spacing": data.theme.fontHeading.letterSpacing || "0em",
     "--inv-heading-transform": data.theme.fontHeading.transform,
     
     "--inv-font-body": data.theme.fontBody.family,
     "--inv-body-size": data.theme.fontBody.size,
     "--inv-body-weight": data.theme.fontBody.weight,
+    "--inv-body-line-height": data.theme.fontBody.lineHeight || "1.6",
+    "--inv-body-letter-spacing": data.theme.fontBody.letterSpacing || "0.02em",
     "--inv-body-transform": data.theme.fontBody.transform,
   } as React.CSSProperties;
 
+  const currentTemplate = data.templateId || "classic";
+
   return (
-    <div className={`invite-root view-${viewMode}`} style={themeStyles}>
+    <div className={`invite-root view-${viewMode} orient-${orientation} tpl-${currentTemplate}`} style={themeStyles}>
       <aside className="invite-left">
         <div className="invite-left-bg" style={{ backgroundImage: `url(${data.gallery[0] || DEFAULT_WEDDING_DATA.gallery[0]})` }} />
         <div className="invite-left-overlay">

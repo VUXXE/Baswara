@@ -23,6 +23,7 @@ export interface Guest {
 
 export interface WeddingData {
   id: string;
+  templateId: string;
   hashtag: string;
   greeting: string;
   guestName: string;
@@ -49,6 +50,7 @@ export interface WeddingData {
     location: string;
     address: string;
     mapsUrl: string;
+    googleMapsEmbedUrl?: string;
   }[];
   weddingDate: string;
   dresscode: {
@@ -81,12 +83,16 @@ export interface WeddingData {
       family: string;
       size: string;
       weight: string;
+      lineHeight?: string;
+      letterSpacing?: string;
       transform: 'uppercase' | 'lowercase' | 'capitalize' | 'none';
     };
     fontBody: {
       family: string;
       size: string;
       weight: string;
+      lineHeight?: string;
+      letterSpacing?: string;
       transform: 'uppercase' | 'lowercase' | 'capitalize' | 'none';
     };
   };
