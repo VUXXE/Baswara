@@ -55,7 +55,7 @@ export default function GuestList({ invitationId }: { invitationId: string }) {
       <div className="grid gap-4">
         {guests.length === 0 ? (
           <div className="text-center py-20 bg-zinc-50 rounded-[2rem] border-2 border-dashed border-zinc-200">
-             <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">No RSVPs yet</p>
+            <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">No RSVPs yet</p>
           </div>
         ) : (
           guests.map((guest) => (
@@ -65,8 +65,8 @@ export default function GuestList({ invitationId }: { invitationId: string }) {
                   <div className="p-5 sm:p-6 flex-1 flex flex-col justify-center">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                         <h3 className="font-bold text-base sm:text-lg text-zinc-900">{guest.name}</h3>
-                         <span className="bg-zinc-200 text-zinc-600 text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md w-fit">+{guest.guest_count - 1} GUESTS</span>
+                        <h3 className="font-bold text-base sm:text-lg text-zinc-900">{guest.name}</h3>
+                        <span className="bg-zinc-200 text-zinc-600 text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-md w-fit">+{guest.guest_count - 1} GUESTS</span>
                       </div>
                       <StatusBadge status={guest.status} />
                     </div>

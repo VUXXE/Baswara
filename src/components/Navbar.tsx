@@ -64,8 +64,8 @@ export default function Navbar() {
             <>
               {/* Desktop Nav Links */}
               <div className="hidden md:flex items-center gap-1 bg-zinc-100/50 p-1 rounded-xl border border-zinc-200/50">
-                 <NavLink href="/dashboard" icon={<LayoutIcon size={14}/>} label="Studio" />
-                 <NavLink href="/dashboard" icon={<Bell size={14}/>} label="Updates" dot />
+                <NavLink href="/dashboard" icon={<LayoutIcon size={14}/>} label="Studio" />
+                <NavLink href="/dashboard" icon={<Bell size={14}/>} label="Updates" dot />
               </div>
 
               {/* User Dropdown / Profile */}
@@ -75,7 +75,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 p-1 pr-3 rounded-full bg-white border border-zinc-200 shadow-sm hover:shadow-md transition-all active:scale-95"
                 >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-rose-400 flex items-center justify-center text-white text-xs font-black">
-                     {session.user.email?.[0].toUpperCase()}
+                    {session.user.email?.[0].toUpperCase()}
                   </div>
                   <ChevronDown size={14} className={cn("text-zinc-400 transition-transform duration-300", menuOpen && "rotate-180")} />
                 </button>
@@ -90,19 +90,19 @@ export default function Navbar() {
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-zinc-100 overflow-hidden z-20 py-2"
                       >
-                         <div className="px-4 py-3 border-b border-zinc-50 mb-1">
+                        <div className="px-4 py-3 border-b border-zinc-50 mb-1">
                             <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Account</p>
                             <p className="text-xs font-bold text-zinc-900 truncate">{session.user.email}</p>
-                         </div>
-                         <DropdownLink href="/profile" icon={<User size={14}/>} label="My Profile" />
-                         <DropdownLink href="/dashboard" icon={<Settings size={14}/>} label="Settings" />
-                         <div className="h-px bg-zinc-50 my-1 mx-2" />
-                         <button 
-                           onClick={handleLogout}
-                           className="w-full flex items-center gap-3 px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors"
-                         >
+                        </div>
+                        <DropdownLink href="/profile" icon={<User size={14}/>} label="My Profile" />
+                        <DropdownLink href="/dashboard" icon={<Settings size={14}/>} label="Settings" />
+                        <div className="h-px bg-zinc-50 my-1 mx-2" />
+                        <button 
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors"
+                        >
                             <LogOut size={14} /> Log Out
-                         </button>
+                        </button>
                       </motion.div>
                     </>
                   )}
@@ -136,9 +136,9 @@ export default function Navbar() {
 function NavLink({ href, icon, label, dot }: any) {
   return (
     <Link href={href} className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all text-xs font-bold relative group">
-       {icon}
-       <span className="hidden lg:inline">{label}</span>
-       {dot && <span className="absolute top-1.5 right-2 w-1 h-1 bg-primary rounded-full group-hover:animate-ping" />}
+      {icon}
+      <span className="hidden lg:inline">{label}</span>
+      {dot && <span className="absolute top-1.5 right-2 w-1 h-1 bg-primary rounded-full group-hover:animate-ping" />}
     </Link>
   );
 }
@@ -146,7 +146,7 @@ function NavLink({ href, icon, label, dot }: any) {
 function DropdownLink({ href, icon, label }: any) {
   return (
     <Link href={href} className="flex items-center gap-3 px-4 py-2 text-xs font-bold text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-colors">
-       {icon} {label}
+      {icon} {label}
     </Link>
   );
 }

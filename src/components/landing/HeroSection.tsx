@@ -8,7 +8,7 @@ import { Heart, Star } from 'lucide-react';
 
 export default function HeroSection() {
   return (
-    <section className="relative z-10 px-6 lg:px-12 pt-4">
+    <section className="relative z-10 px-6 lg:px-12 pt-28 md:pt-36">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           {/* Left Content */}
